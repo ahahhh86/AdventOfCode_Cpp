@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{475b517c-1b4d-4c31-aebe-9c6d997dbf6e}</ProjectGuid>
+    <RootNamespace>AdventOfCode</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <DiagnosticsFormat>Caret</DiagnosticsFormat>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ExternalTemplatesDiagnostics>false</ExternalTemplatesDiagnostics>
+      <BuildStlModules>true</BuildStlModules>
+      <DisableSpecificWarnings>4710;4711;4820;5045</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <DiagnosticsFormat>Caret</DiagnosticsFormat>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <ExternalTemplatesDiagnostics>false</ExternalTemplatesDiagnostics>
+      <BuildStlModules>true</BuildStlModules>
+      <DisableSpecificWarnings>4710;4711;4820;5045</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="2015\md5.cpp">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Speed</FavorSizeOrSpeed>
+      <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Speed</FavorSizeOrSpeed>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</BasicRuntimeChecks>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MaxSpeed</Optimization>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="2015\Puzzle2015-D01.cpp" />
+    <ClCompile Include="2015\Puzzle2015-D01.ixx" />
+    <ClCompile Include="2015\Puzzle2015-D02.cpp" />
+    <ClCompile Include="2015\Puzzle2015-D02.ixx" />
+    <ClCompile Include="2015\Puzzle2015-D03.cpp" />
+    <ClCompile Include="2015\Puzzle2015-D03.ixx" />
+    <ClCompile Include="2015\Puzzle2015-D04.cpp" />
+    <ClCompile Include="2015\Puzzle2015-D04.ixx" />
+    <ClCompile Include="2015\Puzzle2015-D05.cpp" />
+    <ClCompile Include="2015\Puzzle2015-D05.ixx" />
+    <ClCompile Include="2015\Puzzle2015-D06.cpp" />
+    <ClCompile Include="2015\Puzzle2015-D06.ixx" />
+    <ClCompile Include="2015\Puzzle2015-D07.cpp" />
+    <ClCompile Include="2015\Puzzle2015-D07.ixx" />
+    <ClCompile Include="2015\Puzzle2015-D08.cpp" />
+    <ClCompile Include="2015\Puzzle2015-D08.ixx" />
+    <ClCompile Include="2015\Puzzle2015-D09.cpp" />
+    <ClCompile Include="2015\Puzzle2015-D09.ixx" />
+    <ClCompile Include="2015\Puzzle2015-D10.cpp" />
+    <ClCompile Include="2015\Puzzle2015-D10.ixx" />
+    <ClCompile Include="2015\Puzzle2015-D11.cpp" />
+    <ClCompile Include="2015\Puzzle2015-D11.ixx" />
+    <ClCompile Include="2015\Puzzle2015-D12.cpp" />
+    <ClCompile Include="2015\Puzzle2015-D12.ixx" />
+    <ClCompile Include="2015\Puzzle2015-D13.cpp" />
+    <ClCompile Include="2015\Puzzle2015-D13.ixx" />
+    <ClCompile Include="2015\Puzzle2015-D14.cpp" />
+    <ClCompile Include="2015\Puzzle2015-D14.ixx" />
+    <ClCompile Include="2015\Puzzle2015.cpp" />
+    <ClCompile Include="2023\Puzzle2023-D03.cpp" />
+    <ClCompile Include="2023\Puzzle2023-D03.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D01.cpp" />
+    <ClCompile Include="2023\Puzzle2023-D01.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D02.cpp" />
+    <ClCompile Include="2023\Puzzle2023-D02.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D04.cpp" />
+    <ClCompile Include="2023\Puzzle2023-D04.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D05.cpp" />
+    <ClCompile Include="2023\Puzzle2023-D05.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D06.cpp" />
+    <ClCompile Include="2023\Puzzle2023-D06.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D07.cpp" />
+    <ClCompile Include="2023\Puzzle2023-D07.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D08.cpp" />
+    <ClCompile Include="2023\Puzzle2023-D08.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D09.cpp" />
+    <ClCompile Include="2023\Puzzle2023-D09.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D10.cpp">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4710;4711;4820;5045;4062;4061</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4710;4711;4820;5045;4062;4061</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="2023\Puzzle2023-D10.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D11.cpp" />
+    <ClCompile Include="2023\Puzzle2023-D11.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D13.cpp" />
+    <ClCompile Include="2023\Puzzle2023-D13.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D14.cpp" />
+    <ClCompile Include="2023\Puzzle2023-D14.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D15.cpp" />
+    <ClCompile Include="2023\Puzzle2023-D15.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D16.cpp" />
+    <ClCompile Include="2023\Puzzle2023-D16.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D17.cpp" />
+    <ClCompile Include="2023\Puzzle2023-D17.ixx" />
+    <ClCompile Include="2023\Puzzle2023.cpp" />
+    <ClCompile Include="2023\Puzzle2023.ixx" />
+    <ClCompile Include="BasicImports.ixx" />
+    <ClCompile Include="Errors.cpp" />
+    <ClCompile Include="Grid2D.ixx" />
+    <ClCompile Include="Point2D.ixx" />
+    <ClCompile Include="SolvePuzzle.cpp" />
+    <ClCompile Include="Stopwatch.cpp" />
+    <ClCompile Include="AdventDate.cpp" />
+    <ClCompile Include="IO.cpp" />
+    <ClCompile Include="IO.ixx" />
+    <ClCompile Include="2015\Puzzle2015.ixx" />
+    <ClCompile Include="Stopwatch.ixx" />
+    <ClCompile Include="AdventDate.ixx" />
+    <ClCompile Include="AdventOfCode.cpp" />
+    <ClCompile Include="Errors.ixx" />
+    <ClCompile Include="SolvePuzzle.ixx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="2015\md5.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
