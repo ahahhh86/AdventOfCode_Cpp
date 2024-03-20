@@ -252,6 +252,54 @@
     <ClCompile Include="2023\Puzzle2023-D17.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="2015\Puzzle2015-D15.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="2015\Puzzle2015-D15.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="2015\Puzzle2015-D16.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="2015\Puzzle2015-D16.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="2015\Puzzle2015-D17.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="2015\Puzzle2015-D17.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="2015\Puzzle2015-D18.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="2015\Puzzle2015-D18.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="2015\Puzzle2015-D19.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="2015\Puzzle2015-D19.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="2015\Puzzle2015-D20.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="2015\Puzzle2015-D20.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="2015\Puzzle2015-D21.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="2015\Puzzle2015-D21.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="2015\Puzzle2015-D23.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="2015\Puzzle2015-D23.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2015\md5.h">
