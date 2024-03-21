@@ -2,7 +2,6 @@ module;
 
 #include <algorithm>
 #include <fstream>
-#include <numeric>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -38,7 +37,7 @@ namespace { // Input
 
 
 
-	std::ifstream& operator>>(std::ifstream& in, Direction& dir)
+	auto& operator>>(std::ifstream& in, Direction& dir)
 	{
 		char buffer{};
 		in >> buffer;
@@ -89,9 +88,11 @@ namespace { // Testing
 	{
 		std::vector<Direction> result{};
 		result.reserve(str.size());
+
 		std::ranges::for_each(str, [&](char c) {
 			result.push_back(charToDirection(c));
 		});
+
 		return result;
 	}
 

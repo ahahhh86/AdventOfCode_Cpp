@@ -3,7 +3,6 @@ module;
 #include <algorithm>
 #include <fstream>
 #include <set>
-//#include <string>
 #include <string_view>
 #include <vector>
 
@@ -115,7 +114,7 @@ namespace { // Calculations
 
 	auto countPresents(const Instructions& in, bool withRobot)
 	{
-		auto visitedHouses{moveAlong(in, withRobot)};
+		const auto visitedHouses{moveAlong(in, withRobot)};
 		return static_cast<int>(std::size(visitedHouses));
 	}
 }
@@ -127,9 +126,11 @@ namespace { // Testing
 	{
 		Instructions result{};
 		result.reserve(str.size());
+
 		std::ranges::for_each(str, [&](char c) {
 			result.emplace_back(charToDirection(c));
 		});
+
 		return result;
 	}
 

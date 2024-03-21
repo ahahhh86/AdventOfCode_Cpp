@@ -111,7 +111,7 @@ namespace { // Calculations
 				light = false;
 				break;
 			case Toggle::toggle:
-				light = light ? false : true; // "!" creates a warning
+				light = light ? false : true; // "light = !light" creates a warning
 				break;
 			}
 		}

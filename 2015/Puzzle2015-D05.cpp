@@ -19,20 +19,21 @@ namespace Part1 { // Calculations
 		bool has3vowels(std::string_view str)
 		{
 			constexpr int minVowelCount{3};
+
 			int vowelCount{0};
 			for (char c : str) {
-				switch (c) {
+				switch (c) { // fallthrough
 				case 'a':
 				case 'e':
 				case 'i':
 				case 'o':
 				case 'u':
 					++vowelCount;
+					if (vowelCount == minVowelCount) {
+						return true;
+					}
 				}
 
-				if (vowelCount == minVowelCount) {
-					return true;
-				}
 			}
 
 			return false;
@@ -105,7 +106,7 @@ namespace Part2 { // Calculations
 namespace { // Calculations
 	auto countNice(const std::vector<std::string>& list, bool(*fcn)(std::string_view))
 	{
-		const auto result{std::ranges::count_if(list, [&](std::string_view str) {
+		const auto result{std::ranges::count_if(list, [=](std::string_view str) {
 			return fcn(str);
 		})};
 		return static_cast<int>(result);

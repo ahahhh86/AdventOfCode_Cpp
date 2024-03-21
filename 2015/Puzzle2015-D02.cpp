@@ -60,6 +60,7 @@ namespace { // Calculations
 			box.width * box.height,
 			box.height * box.length
 		};
+
 		const int minSide{std::ranges::min(sides)};
 		const int sidesSum{2 * std::accumulate(sides.cbegin(), sides.cend(), 0)};
 
@@ -75,6 +76,7 @@ namespace { // Calculations
 			2 * (box.width + box.height),
 			2 * (box.height + box.length)
 		};
+
 		const int minPerimeter{std::ranges::min(perimeters)};
 		const int volume{box.length * box.width * box.height};
 

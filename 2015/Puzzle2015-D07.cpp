@@ -40,12 +40,14 @@ namespace { // Input
 	struct WireSet
 	{
 		Gate gate{};
-		InputWire wireIn1{""};
-		InputWire wireIn2{""};
+		InputWire wireIn1{Signal{0}};
+		InputWire wireIn2{Signal{0}};
 		std::string wireOut{""};
 	};
 
-	Gate readGate(std::stringstream& in)
+
+
+	auto readGate(std::stringstream& in)
 	{
 		std::string buffer{};
 		in >> buffer;
@@ -87,6 +89,8 @@ namespace { // Input
 		return buffer;
 	}
 
+
+
 	auto readAssign(std::stringstream&& in)
 	{
 		WireSet result{Gate::gAssign};
@@ -120,7 +124,9 @@ namespace { // Input
 		return result;
 	}
 
-	WireSet readSet(std::string_view str)
+
+
+	auto readWireSet(std::string_view str)
 	{
 		if (str.find("NOT ") != std::string::npos) {
 			return readNOT(std::stringstream{str.data()});
@@ -139,7 +145,7 @@ namespace { // Input
 	{
 		std::string buffer{};
 		std::getline(in, buffer);
-		wireSet = readSet(buffer);
+		wireSet = readWireSet(buffer);
 
 		return in;
 	}
@@ -149,28 +155,26 @@ namespace { // Input
 
 namespace { // Calculations
 	using OptionalSignal = std::optional<Signal>;
-	OptionalSignal getSignal(const InputWire& wire, const std::map<std::string, Signal>& map)
+	using SignalMap = std::map<std::string, Signal>;
+
+	OptionalSignal getSignal(const InputWire& wire, const SignalMap& map)
 	{
 		if (wire.index() == inputWireSignalIndex) {
 			return std::get<Signal>(wire);
 		} else {
 			const std::string name{std::get<std::string>(wire)};
 
-			if (name != "") {
-				if (map.contains(name)) {
-					return map.at(name);
-				} else {
-					return {};
-				}
+			if (map.contains(name)) {
+				return map.at(name);
+			} else {
+				return {};
 			}
 		}
-
-		return Signal{0};
 	}
 
 
 
-	Signal caluculateSignal(Signal a, Signal b, Gate gate)
+	Signal calculateSignal(Signal a, Signal b, Gate gate)
 	{
 		switch (gate) {
 		case Gate::gAssign:
@@ -185,20 +189,20 @@ namespace { // Calculations
 			return static_cast<Signal>(a << b);
 		case Gate::gRShift:
 			return static_cast<Signal>(a >> b);
+		default:
+			throw AOC::aocError("calculateSignal(): Not all cases of Gate have been included.");
 		}
-
-		return 0; // surpress warning: C4715 not all control paths return a value
 	}
 
 
 
-	void addToMap(const WireSet& wireSet, std::map<std::string, Signal>& map)
+	void addToMap(const WireSet& wireSet, SignalMap& map)
 	{
 		const auto wire1{getSignal(wireSet.wireIn1, map)};
 		const auto wire2{getSignal(wireSet.wireIn2, map)};
 
 		if (wire1 && wire2) {
-			map.insert({wireSet.wireOut, caluculateSignal(*wire1, *wire2, wireSet.gate)});
+			map.insert({wireSet.wireOut, calculateSignal(*wire1, *wire2, wireSet.gate)});
 		}
 	}
 
@@ -207,20 +211,20 @@ namespace { // Calculations
 	using WireSetKit = std::vector<WireSet>;
 	auto calculateA(const WireSetKit& wiresSets, OptionalSignal setB = {})
 	{
-		std::map<std::string, Signal> wireMap{};
+		SignalMap signalMap{};
 		if (setB) {
-			wireMap.insert({"b", *setB});
+			signalMap.insert({"b", *setB});
 		}
 
 		do {
 			std::ranges::for_each(wiresSets, [&](const WireSet& set) {
-				if (!wireMap.contains(set.wireOut)) {
-					addToMap(set, wireMap);
+				if (!signalMap.contains(set.wireOut)) {
+					addToMap(set, signalMap);
 				}
 			});
-		} while (!wireMap.contains("a"));
+		} while (!signalMap.contains("a"));
 
-		return wireMap["a"];
+		return signalMap["a"];
 	}
 }
 
@@ -231,30 +235,30 @@ namespace { // Testing
 	{
 		if (AOC::debugMode) {
 			const WireSetKit wireSets1{
-				readSet("123 -> x"),
-				readSet("456 -> y"),
-				readSet("x AND y -> a"),
+				readWireSet("123 -> x"),
+				readWireSet("456 -> y"),
+				readWireSet("x AND y -> a"),
 			};
 			const WireSetKit wireSets2{
-				readSet("123 -> x"),
-				readSet("456 -> y"),
-				readSet("x OR y -> a"),
+				readWireSet("123 -> x"),
+				readWireSet("456 -> y"),
+				readWireSet("x OR y -> a"),
 			};
 			const WireSetKit wireSets3{
-				readSet("123 -> x"),
-				readSet("x LSHIFT 2 -> a"),
+				readWireSet("123 -> x"),
+				readWireSet("x LSHIFT 2 -> a"),
 			};
 			const WireSetKit wireSets4{
-				readSet("456 -> y"),
-				readSet("y RSHIFT 2 -> a"),
+				readWireSet("456 -> y"),
+				readWireSet("y RSHIFT 2 -> a"),
 			};
 			const WireSetKit wireSets5{
-				readSet("123 -> x"),
-				readSet("NOT x -> a"),
+				readWireSet("123 -> x"),
+				readWireSet("NOT x -> a"),
 			};
 			const WireSetKit wireSets6{
-				readSet("456 -> y"),
-				readSet("NOT y -> a"),
+				readWireSet("456 -> y"),
+				readWireSet("NOT y -> a"),
 			};
 
 			io.startTests();

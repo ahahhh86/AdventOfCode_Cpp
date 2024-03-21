@@ -22,7 +22,7 @@ namespace { // Input
 	using Location = std::string;
 	using LocationPair = std::pair<Location, Location>;
 
-	constexpr int invalidDistance{0};	// Does not make sense if two places are the same
+	constexpr int invalidDistance{0};	// Does not make sense, if two places are the same
 
 
 
@@ -64,7 +64,7 @@ namespace { // Input
 
 namespace { // Calculations
 	using Distances = std::vector<LocationDistance>;
-	using LocationVec = std::vector<std::string_view>;	// not set, because needs to be permutable
+	using LocationVec = std::vector<std::string_view>;	// not std::set, because needs to be permutable
 
 	auto createLocationVec(const Distances& source)
 	{

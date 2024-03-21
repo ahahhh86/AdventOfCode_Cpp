@@ -1,7 +1,6 @@
 module;
 
 #include <algorithm>
-#include <fstream>
 #include <numeric>
 #include <string>
 #include <string_view>
@@ -34,45 +33,42 @@ namespace Part1 { // Calculations
 	namespace {
 		auto countStr(std::string_view findStr, std::string_view str)
 		{
-			std::size_t pos{0};
 			int result{0};
+			std::size_t pos{str.find(findStr)};
 
-			while (true) {
-				pos = str.find(findStr, pos);
-				if (pos == std::string_view::npos) {
-					break;
-				}
+			while (pos != std::string_view::npos) {
 				++result;
-				pos += findStr.length();	// pos after findStr
+				pos = str.find(findStr, pos + findStr.length()); // continue search after the findStr
 			};
 
 			return result;
 		};
+
+
 
 		auto countHex(std::string_view str)
 		{
 			constexpr int hexDigitCount{2};
+			constexpr std::string_view hexPattern{"\\x"};
 
-			std::size_t pos{0};
 			int result{0};
+			std::size_t pos{str.find(hexPattern)};
 
-			while (true) {
-				constexpr std::string_view hexPattern{"\\x"};
-
-				pos = str.find(hexPattern, pos);
-				if (pos == std::string_view::npos) {
-					break;
-				}
+			while (pos != std::string_view::npos) {
 				pos += hexPattern.size();	// pos after "\x"
 
 				if ((pos + 1 < str.length()) && std::isxdigit(str[pos]) && std::isxdigit(str[pos + 1])) {
-					pos += hexDigitCount;	// pos after "\x##"
 					++result;
+					pos += hexDigitCount;	// pos after "\x##"
 				}
+
+				pos = str.find(hexPattern, pos);
 			};
 
 			return result;
 		};
+
+
 
 		auto calculateDifference(std::string_view str)
 		{

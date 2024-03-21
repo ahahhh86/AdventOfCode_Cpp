@@ -13,11 +13,6 @@ import BasicImports;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * *
 
-namespace { // Input
-}
-
-
-
 namespace { // Calculations
 	using Index = int;
 
@@ -28,12 +23,13 @@ namespace { // Calculations
 	{
 		constexpr auto loopEnd{std::numeric_limits<Index>::max()};
 
-		for (Index i{startIndex}; i < loopEnd; ++i) { // potentially long loop, but not infinite
+		for (Index i{startIndex}; i <= loopEnd; ++i) { // potentially long loop, but not infinite
 			const std::string hash = md5(secretKey.data() + std::to_string(i));
 			if (hash.starts_with(hashStart)) return i;
 		}
 
-		return -1;
+		throw AOC::aocError("No matching hash found!");
+//		return -1;
 	}
 }
 
@@ -61,9 +57,12 @@ namespace AOC::Y2015::D04 { // Solution
 		IO io{{Year::y2015, Day::d04}};
 		testPuzzle(io);
 
-		const std::string secretKey{io.readInputFile<std::string>(/*io.getInputFile()*/)[0]};
+		const std::string secretKey{io.readInputFile<std::string>()[0]};
 		const Index part1{findHash(secretKey, part1StartsWith)};
 		io.printSolution(part1, 254575);
+
+		// the hash of part 2 starts with one "0" more, so every number that did not work
+		// with part 1 can be skipped
 		io.printSolution(findHash(secretKey, part2StartsWith, part1), 1038736);
 	}
 }
