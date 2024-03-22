@@ -41,7 +41,7 @@ int main()
 	std::cout << "* * * Advent of Code  * * * * * * * * *\n\n";
 
 	//if (debugMode) {
-		solvePuzzle({Year::y2015, Day::d09});
+		solvePuzzle({Year::y2015, Day::d16});
 	//} else {
 		//solveAOC();
 	//}

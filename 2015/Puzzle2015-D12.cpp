@@ -1,11 +1,6 @@
 module;
 
-//#include <algorithm>
-//#include <fstream>
-//#include <numeric>
 #include <string>
-//#include <string_view>
-//#include <vector>
 
 module Puzzle2015:D12;
 
@@ -15,13 +10,8 @@ import BasicImports;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * *
 
-namespace { // Input
-}
-
-
-
 namespace { // Calculations
-	auto countNumbers(std::string_view str)
+	auto sumNumbers(std::string_view str)
 	{
 		int result{0};
 
@@ -119,19 +109,19 @@ namespace { // Testing
 		if (AOC::debugMode) {
 			io.startTests();
 
-			io.printTest(countNumbers("[1,2,3]"), 6);
-			io.printTest(countNumbers("{\"a\":2,\"b\":4}"), 6);
-			io.printTest(countNumbers("[[[3]]]"), 3);
-			io.printTest(countNumbers("{\"a\":{\"b\":4},\"c\":-1}"), 3);
-			io.printTest(countNumbers("{\"a\":[-1,1]}"), 0);
-			io.printTest(countNumbers("[-1,{\"a\":1}]"), 0);
-			io.printTest(countNumbers("[]"), 0);
-			io.printTest(countNumbers("{}"), 0);
+			io.printTest(sumNumbers("[1,2,3]"), 6);
+			io.printTest(sumNumbers("{\"a\":2,\"b\":4}"), 6);
+			io.printTest(sumNumbers("[[[3]]]"), 3);
+			io.printTest(sumNumbers("{\"a\":{\"b\":4},\"c\":-1}"), 3);
+			io.printTest(sumNumbers("{\"a\":[-1,1]}"), 0);
+			io.printTest(sumNumbers("[-1,{\"a\":1}]"), 0);
+			io.printTest(sumNumbers("[]"), 0);
+			io.printTest(sumNumbers("{}"), 0);
 
-			io.printTest(countNumbers(removeRed("[1,2,3]")), 6);
-			io.printTest(countNumbers(removeRed("[1,{\"c\":\"red\",\"b\":2},3]")), 4);
-			io.printTest(countNumbers(removeRed("{\"d\":\"red\",\"e\":[1,2,3,4],\"f\":5}")), 0);
-			io.printTest(countNumbers(removeRed("[1,\"red\",5]")), 6);
+			io.printTest(sumNumbers(removeRed("[1,2,3]")), 6);
+			io.printTest(sumNumbers(removeRed("[1,{\"c\":\"red\",\"b\":2},3]")), 4);
+			io.printTest(sumNumbers(removeRed("{\"d\":\"red\",\"e\":[1,2,3,4],\"f\":5}")), 0);
+			io.printTest(sumNumbers(removeRed("[1,\"red\",5]")), 6);
 
 			io.endTests();
 		}
@@ -147,7 +137,7 @@ namespace AOC::Y2015::D12 { // Solution
 		testPuzzle(io);
 
 		const auto input{io.readInputFile<std::string>()[0]};
-		io.printSolution(countNumbers(input), 156366);
-		io.printSolution(countNumbers(removeRed(input)), 96852);
+		io.printSolution(sumNumbers(input), 156366);
+		io.printSolution(sumNumbers(removeRed(input)), 96852);
 	}
 }

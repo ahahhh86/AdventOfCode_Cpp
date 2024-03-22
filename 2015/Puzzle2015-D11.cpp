@@ -18,11 +18,11 @@ namespace { // Input
 
 	std::string getInput(const std::vector<std::string> in)
 	{
-		if (in.size() != 1) throw AOC::InvalidInputData("getInput");
-		if (in[0].size() != passwordLength) throw AOC::InvalidInputData("getInput");
+		if (in.size() != 1) throw AOC::InvalidInputData("getInput(): size");
+		if (in[0].size() != passwordLength) throw AOC::InvalidInputData("getInput(): length");
 
 		std::ranges::for_each(in[0], [](char c) {
-			if (!std::islower(c)) throw AOC::InvalidInputData("getInput");
+			if (!std::islower(c)) throw AOC::InvalidInputData("getInput(): not lower");
 		});
 
 		return in[0];
@@ -34,7 +34,7 @@ namespace { // Input
 namespace { // Calculations
 	void increasePassword(std::string& password, std::size_t index)
 	{
-		if (password.size() <= index) throw AOC::InvalidInputData("increasePassword");
+		if (password.size() <= index) throw AOC::InvalidInputData("increasePassword(): size");
 
 		switch (password[index]) {
 		case 'h':
@@ -66,7 +66,7 @@ namespace { // Calculations
 		int straightCount{1};
 
 		for (char c : password) {
-			if (buffer + 1 == c) {
+			if (c == buffer + 1) {
 				++straightCount;
 				if (straightCount == straightNeeded) return true;
 			} else {
@@ -81,24 +81,19 @@ namespace { // Calculations
 
 
 
-	bool isDouble(std::string_view password) // TODO: refactor
+	bool isDouble(std::string_view password)
 	{
-		char buffer{password[0]};
-		int count{0};
+		constexpr int doublesNeeded{2};
 
-		for (std::size_t i{1}; i < passwordLength; ++i) {
-			if (buffer == password[i]) {
-				++count;
-				++i;
-			}
+		int doublesCount{0};
 
-			if (count > 1) {
-				return true;
-			}
+		for (auto i{std::next(password.cbegin())}; i != password.cend(); ++i) {
+			if (*i != *std::prev(i)) { continue; }
 
-			if (i < passwordLength) {
-				buffer = password[i];
-			}
+			++doublesCount;
+			if (doublesCount >= doublesNeeded) { return true; }
+
+			if (i != std::prev(password.cend())) {++i;} // else aaa would count as two doubles
 		}
 
 		return false;

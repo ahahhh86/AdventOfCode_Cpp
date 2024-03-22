@@ -3,8 +3,10 @@ module;
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <numeric>
 #include <string>
 #include <string_view>
+#include <vector>
 
 module Puzzle2015:D15;
 
@@ -14,14 +16,10 @@ import BasicImports;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * *
 
-namespace {
-	constexpr int spoon_count{100};
-
-
-
-	struct SIngredientStat
+namespace { // Input
+	struct IngredientStat
 	{
-		std::string name{""};
+		//std::string name{""};
 		int capacity{0};
 		int durability{0};
 		int flavor{0};
@@ -29,144 +27,158 @@ namespace {
 		int calories{0};
 	};
 
+	using StatVector = std::vector<IngredientStat>;
 
 
-	struct SIngredients
+
+	auto& operator>>(std::ifstream& in, IngredientStat& stats)
 	{
-		int sugar{0};
-		int sprinkles{0};
-		int candy{0};
-		int chocolate{0};
-	};
-
-
-
-	SIngredientStat readIngredientStat(std::ifstream& file)
-	{
-		SIngredientStat result{};
-
+		// format example: Sugar: capacity 3, durability 0, flavor 0, texture -3, calories 2
 		std::string buffer{""};
-		file >> result.name;
-		result.name.pop_back(); // remove colon
+		in >> buffer; // ignore name
 
-		// TODO: Refactor to own function
-		constexpr auto capacity_width{std::string_view("capacity ").length()};
-		file.ignore(capacity_width);
-		file >> result.capacity;
+		constexpr auto capacityWidth{std::string_view("capacity ").length()};
+		in.ignore(capacityWidth);
+		in >> stats.capacity;
 
-		constexpr auto durability_width{std::string_view(", durability ").length()};
-		file.ignore(durability_width);
-		file >> result.durability;
+		constexpr auto durabilityWidth{std::string_view(", durability ").length()};
+		in.ignore(durabilityWidth);
+		in >> stats.durability;
 
-		constexpr auto flavor_width{std::string_view(", flavor ").length()};
-		file.ignore(flavor_width);
-		file >> result.flavor;
+		constexpr auto flavorWidth{std::string_view(", flavor ").length()};
+		in.ignore(flavorWidth);
+		in >> stats.flavor;
 
-		constexpr auto texture_width{std::string_view(", texture ").length()};
-		file.ignore(texture_width);
-		file >> result.texture;
+		constexpr auto textureWidth{std::string_view(", texture ").length()};
+		in.ignore(textureWidth);
+		in >> stats.texture;
 
-		constexpr auto calories_width{std::string_view(", calories ").length()};
-		file.ignore(calories_width);
-		file >> result.calories;
+		constexpr auto caloriesWidth{std::string_view(", calories ").length()};
+		in.ignore(caloriesWidth);
+		in >> stats.calories;
 
-		if (file.fail()) throw AOC::InvalidFileInput();
+		if (in.fail()) throw AOC::InvalidFileInput();
 
-		return result;
+		return in;
+	}
+}
+
+
+
+namespace { // Calculations
+	constexpr int spoonCount{100};
+
+	using Ingredients = std::vector<int>;
+
+
+
+	bool areIngredientsValid(const Ingredients& ingr)
+	{
+		return std::accumulate(ingr.cbegin(), ingr.cend(), 0) == spoonCount;
 	}
 
 
 
-	class Recipes
+	int calculateScore(const Ingredients& ingr, const StatVector& stats)
 	{
-	public:
-		Recipes() = delete;
-		Recipes(const Recipes&) = delete;
-		Recipes(Recipes&&) = delete;
-		explicit Recipes(std::ifstream input);
-		~Recipes() = default;
+#ifndef NDEBUG
+		if (!areIngredientsValid(ingr)) throw AOC::InvalidInputData("calculateScore(): !areIngredientsValid(ingr)");
+		if (ingr.size() != stats.size()) throw AOC::InvalidInputData("calculateScore(): ingr.size() != stats.size()");
+#endif // NDEBUG
 
+		int capacityScore{0};
+		for (std::size_t i{0}; i < ingr.size(); ++i) {
+			capacityScore += ingr[i] * stats[i].capacity;
+		}
+		if (capacityScore < 1) { return 0; }
 
-		Recipes& operator=(const Recipes&) = delete;
-		Recipes& operator=(Recipes&&) = delete;
+		int durabilityScore{0};
+		for (std::size_t i{0}; i < ingr.size(); ++i) {
+			durabilityScore += ingr[i] * stats[i].durability;
+		}
+		if (durabilityScore < 1) { return 0; }
 
+		int flavorScore{0};
+		for (std::size_t i{0}; i < ingr.size(); ++i) {
+			flavorScore += ingr[i] * stats[i].flavor;
+		}
+		if (flavorScore < 1) { return 0; }
 
-		int calculateScore(const SIngredients ingr) const;
-		int calculateCalories(const SIngredients ingr) const;
+		int textureScore{0};
+		for (std::size_t i{0}; i < ingr.size(); ++i) {
+			textureScore += ingr[i] * stats[i].texture;
+		}
+		if (textureScore < 1) { return 0; }
 
-	private:
-		// Assuming the same properties for each input // TODO: as vector
-		const SIngredientStat m_sugarProperties;
-		const SIngredientStat m_sprinklesProperties;
-		const SIngredientStat m_candyProperties;
-		const SIngredientStat m_chocolateProperties;
-	};
-
-
-
-	Recipes::Recipes(std::ifstream input):
-		m_sugarProperties{readIngredientStat(input)},
-		m_sprinklesProperties{readIngredientStat(input)},
-		m_candyProperties{readIngredientStat(input)},
-		m_chocolateProperties{readIngredientStat(input)}
-	{}
-
-
-
-	int Recipes::calculateScore(const SIngredients ingr) const
-	{
-		if ((ingr.sugar + ingr.sprinkles + ingr.candy + ingr.chocolate) != spoon_count)  throw AOC::aocError("You have to use 100 spoons.");
-
-		const int capacity_score = std::max(
-			0,
-			m_sugarProperties.capacity * ingr.sugar + m_sprinklesProperties.capacity * ingr.sprinkles + m_candyProperties.capacity * ingr.candy + m_chocolateProperties.capacity * ingr.chocolate);
-
-		const int durability_score = std::max(
-			0,
-			m_sugarProperties.durability * ingr.sugar + m_sprinklesProperties.durability * ingr.sprinkles + m_candyProperties.durability * ingr.candy + m_chocolateProperties.durability * ingr.chocolate);
-
-		const int flavor_score = std::max(
-			0,
-			m_sugarProperties.flavor * ingr.sugar + m_sprinklesProperties.flavor * ingr.sprinkles + m_candyProperties.flavor * ingr.candy + m_chocolateProperties.flavor * ingr.chocolate);
-
-		const int texture_score = std::max(
-			0,
-			m_sugarProperties.texture * ingr.sugar + m_sprinklesProperties.texture * ingr.sprinkles + m_candyProperties.texture * ingr.candy + m_chocolateProperties.texture * ingr.chocolate);
-
-		return capacity_score * durability_score * flavor_score * texture_score;
+		return capacityScore * durabilityScore * flavorScore * textureScore;
 	}
 
 
 
-	int Recipes::calculateCalories(const SIngredients ingr) const
+	int calculateCalories(const Ingredients& ingr, const StatVector& stats)
 	{
-		if ((ingr.sugar + ingr.sprinkles + ingr.candy + ingr.chocolate) != spoon_count)  throw AOC::aocError("You have to use 100 spoons.");
+#ifndef NDEBUG
+		if (!areIngredientsValid(ingr)) throw AOC::InvalidInputData("calculateScore(): !areIngredientsValid(ingr)");
+		if (ingr.size() != stats.size()) throw AOC::InvalidInputData("calculateScore(): ingr.size() != stats.size()");
+#endif // NDEBUG
 
-		return m_sugarProperties.calories * ingr.sugar + m_sprinklesProperties.calories * ingr.sprinkles + m_candyProperties.calories * ingr.candy + m_chocolateProperties.calories * ingr.chocolate;
+		int calories{0};
+		for (std::size_t i{0}; i < ingr.size(); ++i) {
+			calories += ingr[i] * stats[i].calories;
+		}
+
+		return calories;
+	}
+
+
+
+	auto getHighestScore(const StatVector& stats)
+	{
+		constexpr int neededCalories{500};
+
+		int maxScore{0};
+		int maxScoreCalories{0};
+
+		// TODO; works only for four ingredients
+		for (int i{0}; i < spoonCount; ++i) {
+			for (int j{0}; j < (spoonCount - i); ++j) {
+				for (int k = 0; k < (spoonCount - i - j); ++k) {
+					const int l = spoonCount - i - j - k;
+					const std::vector<int> ingr{i, j, k, l};
+					const int score = calculateScore(ingr, stats);
+
+					maxScore = std::max(maxScore, score);
+					if (calculateCalories(ingr, stats) == neededCalories) {
+						maxScoreCalories = std::max(maxScoreCalories, score);
+					}
+				}
+			}
+		}
+
+		return std::make_pair(maxScore, maxScoreCalories);
 	}
 }
 
 
 
 namespace { // Testing
-	// TODO:
-	//void testPuzzle(AOC::IO& io)
-	//{
-	//	if (AOC::debugMode) {
-	//		const StatVector stats{
-	//			{14, 10, 127},
-	//			{16, 11, 162},
-	//		};
+	void testPuzzle(AOC::IO& io)
+	{
+		if (AOC::debugMode) {
+			const std::vector<IngredientStat> stats {
+				IngredientStat{-1, -2, 6, 3, 8},	// Butterscotch
+				IngredientStat{2, 3, -2, -1, 3},		// Cinnamon
+			};
 
-	//		io.startTests();
+			io.startTests();
 
-	//		const auto raceResult{getRaceResults(stats, 1000)};
-	//		io.printTest(raceResult.first, 1120);
-	//		io.printTest(raceResult.second, 689);
+			io.printTest(calculateScore({44, 56}, stats), 62842880);
+			io.printTest(calculateCalories({40, 60}, stats), 500);
+			io.printTest(calculateScore({40, 60}, stats), 57600000);
 
-	//		io.endTests();
-	//	}
-	//}
+			io.endTests();
+		}
+	}
 }
 
 
@@ -175,31 +187,12 @@ namespace AOC::Y2015::D15 {
 	void solvePuzzle()
 	{
 		IO io{{Year::y2015, Day::d15}};
-		//testPuzzle(io);
+		testPuzzle(io);
 
-		Recipes recipes{io.getInputFile()};
+		const auto stats{io.readInputFile<IngredientStat>()};
+		const auto result{getHighestScore(stats)};
 
-		constexpr int needed_calories{500};
-		SIngredients ingr{};
-		int score{};
-		int max_score{0};
-		int max_score_calories{0};
-
-		for (ingr.sugar = 0; ingr.sugar < spoon_count; ++ingr.sugar) {
-			for (ingr.sprinkles = 0; ingr.sprinkles < (spoon_count - ingr.sugar); ++ingr.sprinkles) {
-				for (ingr.candy = 0; ingr.candy < (spoon_count - ingr.sugar - ingr.sprinkles); ++ingr.candy) {
-					ingr.chocolate = spoon_count - ingr.sugar - ingr.sprinkles - ingr.candy;
-					score = recipes.calculateScore(ingr);
-
-					max_score = std::max(max_score, score);
-					if (recipes.calculateCalories(ingr) == needed_calories) {
-						max_score_calories = std::max(max_score_calories, score);
-					}
-				}
-			}
-		}
-
-		io.printSolution(max_score, 222870);
-		io.printSolution(max_score_calories, 117936);
+		io.printSolution(result.first, 222870);
+		io.printSolution(result.second, 117936);
 	}
 }

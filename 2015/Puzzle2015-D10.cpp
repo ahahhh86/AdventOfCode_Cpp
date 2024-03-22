@@ -2,6 +2,7 @@ module;
 
 #include <algorithm>
 #include <string>
+#include <string_view>
 #include <vector>
 
 module Puzzle2015:D10;
@@ -25,7 +26,7 @@ namespace { // Input
 
 
 namespace { // Calculations
-	void setNextString(std::string& str)
+	std::string getNextString(std::string_view str)
 	{
 		std::string result{};
 		result.reserve(str.length() * 2);
@@ -47,7 +48,7 @@ namespace { // Calculations
 		result.append(std::to_string(count));
 		result.push_back(buffer);
 
-		str = result;
+		return result;
 	}
 
 
@@ -55,7 +56,7 @@ namespace { // Calculations
 	auto calculateStrings(std::string& str, int loops)
 	{
 		for (int i{0}; i < loops; ++i) {
-			setNextString(str);
+			str = getNextString(str);
 		}
 
 		return str.length();
@@ -71,20 +72,18 @@ namespace { // Testing
 			io.startTests();
 
 			using namespace std::literals;
-			std::string str{"211"s};
-			setNextString(str);
-			io.printTest(str, "1221"s);
+			io.printTest(getNextString("211"s), "1221"s);
 
-			str = "1";
-			setNextString(str);
+			std::string str{"1"s};
+			str = getNextString(str);
 			io.printTest(str, "11"s);
-			setNextString(str);
+			str = getNextString(str);
 			io.printTest(str, "21"s);
-			setNextString(str);
+			str = getNextString(str);
 			io.printTest(str, "1211"s);
-			setNextString(str);
+			str = getNextString(str);
 			io.printTest(str, "111221"s);
-			setNextString(str);
+			str = getNextString(str);
 			io.printTest(str, "312211"s);
 
 			io.endTests();

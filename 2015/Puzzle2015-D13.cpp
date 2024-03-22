@@ -66,9 +66,11 @@ namespace { // Input
 namespace { // Calculations
 	using HappinessVector = std::vector<PotentialHappiness>;
 	using GuestList = std::vector<std::string>;
+
 	auto createGuestList(const HappinessVector& happyList)
 	{
 		GuestList result{};
+		result.reserve(happyList.size());
 
 		std::ranges::for_each(happyList, [&](const PotentialHappiness& p) {
 			result.push_back(p.guests.first);
@@ -88,9 +90,12 @@ namespace { // Calculations
 		const auto h{std::ranges::find_if(v, [&](const auto& p) {
 			return p.guests == guests;
 		})};
+
 		if (h != v.cend()) {
 			return h->happiness;
 		} else {
+			// For part 1 this could throw an error,
+			// but part 2 needs the return value
 			return 0;
 		}
 	}
@@ -99,11 +104,13 @@ namespace { // Calculations
 
 	auto calculateHappiness(const GuestList& guests, const HappinessVector& v)
 	{
-		const auto loopEnd{std::prev(guests.cend())};
-		auto result{findHappiness({*guests.cbegin(), *loopEnd}, v)
-				+ findHappiness({*loopEnd, *guests.cbegin()}, v)};
+		const auto firstGuest{guests.cbegin()};
+		const auto lastGuest{std::prev(guests.cend())};
 
-		for (auto i{guests.cbegin()}; i != loopEnd; ++i) {
+		auto result{findHappiness({*firstGuest, *lastGuest}, v)
+				+ findHappiness({*lastGuest, *firstGuest}, v)};
+
+		for (auto i{firstGuest}; i != lastGuest; ++i) {
 			const auto j{std::next(i)};
 			result += findHappiness({*i, *j}, v)
 				+ findHappiness({*j, *i}, v);

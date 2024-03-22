@@ -20,6 +20,8 @@ namespace { // Input
 		int restTime{};
 	};
 
+
+
 	auto& operator>>(std::ifstream& in, ReindeerStats& deer)
 	{
 		// format example: Comet can fly 14 km/s for 10 seconds, but then must rest for 127 seconds.
@@ -45,6 +47,8 @@ namespace { // Calculations
 	{
 	public:
 		Reindeer(const ReindeerStats& stats);
+
+		Reindeer& operator=(Reindeer&) = delete;
 
 		auto fly();
 		auto getDistance() const;
