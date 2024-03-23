@@ -59,7 +59,7 @@ namespace AOC {
 
 
 	InvalidInputData::InvalidInputData(std::string_view functionName):
-		aocError(std::format("Invalid input. This should have been checked before. @{}", functionName))
+		aocError(std::format("Invalid input. @{}", functionName))
 	{
 	}
 }

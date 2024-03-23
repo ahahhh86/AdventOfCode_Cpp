@@ -11,6 +11,7 @@ export module Grid2D;
 
 //import std; // TODO: import if IntelliSense works with it
 export import Point2D;
+import Errors;
 
 
 
@@ -34,15 +35,13 @@ export namespace AOC {
 		auto cbegin() const;
 		auto cend() const;
 
+		auto getGridSize() const;
 		void forSub(Point from, Point to, auto fnc);
-
-		//friend std::ostream& operator<<(std::ostream& out, const Grid2D<T>& grid);
 
 	private:
 		constexpr std::size_t calc1D(Point pos) const;
 
-		int m_x;
-		int m_y;
+		Point m_size{};
 		std::vector<T> m_vec1D{};
 	};
 
@@ -50,8 +49,7 @@ export namespace AOC {
 
 	template<typename T>
 	Grid2D<T>::Grid2D(Point size):
-		m_x{size.x},
-		m_y{size.y}
+		m_size{size}
 	{
 #pragma warning(suppress : 4365) // C4365 conversion from 'int' to 'const unsigned __int64', signed/unsigned mismatch
 		m_vec1D.resize(size.x * size.y);
@@ -108,9 +106,21 @@ export namespace AOC {
 
 
 	template<typename T>
+	auto Grid2D<T>::getGridSize() const
+	{
+		return m_size;
+	}
+
+
+
+	template<typename T>
 	void Grid2D<T>::forSub(Point from, Point to, auto fnc)
 	{
-		// TODO: check if valid input
+		if (!from.isInBounds({0, 0}, {m_size.x - 1, m_size.y - 1})
+		   || !to.isInBounds({0, 0}, {m_size.x - 1, m_size.y - 1})) {
+			throw AOC::aocError("Point2D::forsub(): out of bounds");
+		}
+
 		for (int x{from.x}; x <= to.x; ++x) {
 			for (int y{from.y}; y <= to.y; ++y) {
 				fnc(m_vec1D[calc1D({x, y})]);
@@ -123,30 +133,6 @@ export namespace AOC {
 	template<typename T>
 	constexpr std::size_t Grid2D<T>::calc1D(Point pos) const
 	{
-		return static_cast<std::size_t>(pos.x) + static_cast<std::size_t>(m_x) * static_cast<std::size_t>(pos.y);
+		return static_cast<std::size_t>(pos.x) + static_cast<std::size_t>(m_size.x) * static_cast<std::size_t>(pos.y);
 	}
-
-
-
-	//template<typename T>
-	//std::ostream& operator<<(std::ostream& out, const Grid2D<T>& grid)
-	//{
-	//	Point2D pos{0, 0};
-
-	//	std::ranges::for_each(grid.m_vec1D, [&](const T& i) {
-	//		out << "| " << i;
-
-	//		if (pos.x + 1 == grid.m_x) {
-	//			pos.x = 0;
-	//			++pos.y;
-	//			out << " |\n";
-	//		} else {
-	//			++pos.x;
-	//			out << " ";
-	//		}
-	//	});
-
-	//	out << '\n';
-	//	return out;
-	//}
 }

@@ -16,125 +16,66 @@ import Grid2D;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * *
 
-namespace {
-	constexpr int grid_size{100};
-	using lightGrid_t = AOC::Grid2D<int>;
+namespace { // Input
+	using LightGrid = AOC::Grid2D<int>; // bool would be sufficient, but the underling std::vector works different with bool
+	using Point = LightGrid::Point;
+	constexpr Point lightGridSize{100, 100};
 
 
 
-	class LightGrid
+	LightGrid readLightGrid(std::ifstream&& in)
 	{
-	public:
-		LightGrid() = default;
-		LightGrid(const LightGrid&) = default;
-		LightGrid(LightGrid&&) = default;
-		explicit LightGrid(std::ifstream input);
-		~LightGrid() = default;
+		LightGrid result{lightGridSize};
+		auto pos{result.begin()};
 
-
-
-		LightGrid& operator=(const LightGrid&) = delete;
-		LightGrid& operator=(LightGrid&&) = delete;
-
-
-
-		auto accumulateData() const;
-		void animateLights();
-		int sumAdjacentLights(int x, int y);
-		void turnOnEdges();
-
-
-	private:
-		lightGrid_t m_input{{grid_size, grid_size}};
-		lightGrid_t m_new_lights{{grid_size, grid_size}}; // to avoid multiple allocations
-	};
-
-
-
-	LightGrid::LightGrid(std::ifstream input)
-	{
 		char buffer{};
-		auto i{m_input.begin()};
+		in >> buffer;
 
-		input >> buffer;
-		while (!input.eof()) {
+		while (!in.eof()) {
 			switch (buffer) {
 			case '.':
-				*i = 0;
-				std::advance(i, 1);
+				*pos = 0;
+				++pos;
 				break;
 
 			case '#':
-				*i = 1;
-				std::advance(i, 1);
+				*pos = 1;
+				++pos;
 				break;
 
 			case '\r':
 			case '\n':
-				// Do nothing
+				// do nothing
 				break;
 
 			default:
 				throw AOC::InvalidFileInput();
-				break;
 			}
-			input >> buffer;
-		}
-		m_new_lights = m_input;
-	}
 
-
-
-	auto LightGrid::accumulateData() const
-	{
-		return std::accumulate(m_input.cbegin(), m_input.cend(), 0);
-	}
-
-
-
-	void LightGrid::animateLights()
-	{
-		int numAdjacentLights{};
-
-		for (int j, i = 0; i < grid_size; ++i) {
-			for (j = 0; j < grid_size; ++j) {
-				numAdjacentLights = sumAdjacentLights(i, j);
-				int& currentLight = m_new_lights[{i, j}]; // just for readability
-
-				if (m_input[{i, j}] != 0) {
-					if ((numAdjacentLights == 2) || (numAdjacentLights == 3)) { // stay alive // @suppress("Avoid magic numbers")
-						currentLight = 1;
-					} else { // die
-						currentLight = 0;
-					}
-				} else {
-					if (numAdjacentLights == 3) { // be born // @suppress("Avoid magic numbers")
-						currentLight = 1;
-					} else { // stay dead
-						currentLight = 0;
-					}
-				}
-			}
+			in >> buffer;
 		}
 
-		m_input = m_new_lights;
+		if (pos != result.end()) { throw AOC::InvalidInputData("readLightGrid(): file size does not match grid size."); }
+
+		return result;
 	}
+}
 
 
 
-	int LightGrid::sumAdjacentLights(int x, int y)
+namespace { // Calculations
+	int countAdjacentLights(const LightGrid& lg, Point pos)
 	{
-		int result = m_input[{x, y}] ? -1 : 0; // if middle is alive, reduce by one, else it must have been excluded from loop
+		int result {lg[pos] ? -1 : 0}; // if middle is alive, reduce by one, else it must have been excluded from loop
+		const Point gridSize{lg.getGridSize()};
 
-		for (int j, i = -1; i < 2; ++i) {
-			for (j = -1; j < 2; ++j) {
-				int x_pos{x + i};
-				int y_pos{y + j};
+		for (int i{-1}; i < 2; ++i) {
+			for (int j{-1}; j < 2; ++j) {
+				const Point newPos{pos.x + i, pos.y + j};
 
-				if (x_pos < 0 || grid_size <= x_pos) continue;
-				if (y_pos < 0 || grid_size <= y_pos) continue;
+				if (!newPos.isInBounds({0, 0}, {gridSize.x - 1, gridSize.y - 1})) { continue; }
 
-				if (m_input[{x_pos, y_pos}] != 0) {
+				if (lg[newPos] != 0) {
 					++result;
 				}
 			}
@@ -145,36 +86,129 @@ namespace {
 
 
 
-	void LightGrid::turnOnEdges()
+	void setNextAnimation(LightGrid& lg)
 	{
-		m_input[{0, 0}] = 1;
-		m_input[{0, grid_size - 1}] = 1;
-		m_input[{grid_size - 1, 0}] = 1;
-		m_input[{grid_size - 1, grid_size - 1}] = 1;
+		// ok to create a new grid every iteration, as in release build it takes about 25 ms to solve both puzzles
+		LightGrid newLights{lg};
+		const Point gridSize{lg.getGridSize()};
+
+		for (int i{0}; i < gridSize.x; ++i) {
+			for (int j{0}; j < gridSize.y; ++j) {
+				const int numAdjacentLights = countAdjacentLights(lg, {i, j});
+				int& currentLight = newLights[{i, j}]; // just for readability
+
+				if (lg[{i, j}] != 0) {
+					if ((numAdjacentLights == 2) || (numAdjacentLights == 3)) { // stay alive
+						currentLight = 1;
+					} else { // die
+						currentLight = 0;
+					}
+				} else {
+					if (numAdjacentLights == 3) { // be born
+						currentLight = 1;
+					} else { // stay dead
+						currentLight = 0;
+					}
+				}
+			}
+		}
+
+		lg = newLights;
+	}
+
+
+
+	int accumulateLights(const LightGrid& lg)
+	{
+		return std::accumulate(lg.cbegin(), lg.cend(), 0);
+	}
+
+
+
+	void turnOnEdges(LightGrid& lg)
+	{
+		const Point gridSize{lg.getGridSize()};
+
+		lg[{0, 0}] = 1;
+		lg[{0, gridSize.y - 1}] = 1;
+		lg[{gridSize.x - 1, 0}] = 1;
+		lg[{gridSize.x - 1, gridSize.y - 1}] = 1;
+	}
+
+
+
+	int animateLights(LightGrid lg/*copy(!)*/, int animationCount, bool Part2 = false)
+	{
+		if (Part2) { turnOnEdges(lg); }
+
+		for (int i{0}; i < animationCount; ++i) {
+			setNextAnimation(lg);
+			if (Part2) { turnOnEdges(lg); }
+		}
+
+		return accumulateLights(lg);
 	}
 }
 
 
 
 namespace { // Testing
-	// TODO:
-	//void testPuzzle(AOC::IO& io)
-	//{
-	//	if (AOC::debugMode) {
-	//		const StatVector stats{
-	//			{14, 10, 127},
-	//			{16, 11, 162},
-	//		};
+	auto createLG(std::vector<std::vector<char>>&& v)
+	{
+		LightGrid lg{{6, 6}};
+		auto pos{lg.begin()};
 
-	//		io.startTests();
+		for (const std::vector<char>& subVec : v) {
+			for (char c : subVec) {
+				if (c == '#') {
+					*pos = 1;
+				} else {
+					*pos = 0;
+				}
+				++pos;
+			}
+		}
 
-	//		const auto raceResult{getRaceResults(stats, 1000)};
-	//		io.printTest(raceResult.first, 1120);
-	//		io.printTest(raceResult.second, 689);
+		return lg;
+	}
 
-	//		io.endTests();
-	//	}
-	//}
+	void testPuzzle(AOC::IO& io)
+	{
+		if (AOC::debugMode) {
+			const LightGrid lg1{createLG({
+				{'.', '#', '.', '#', '.', '#'},
+				{'.', '.', '.', '#', '#', '.'},
+				{'#', '.', '.', '.', '.', '#'},
+				{'.', '.', '#', '.', '.', '.'},
+				{'#', '.', '#', '.', '.', '#'},
+				{'#', '#', '#', '#', '.', '.'},
+			})};
+
+			const LightGrid lg2{createLG({
+				{'#', '#', '.', '#', '.', '#'},
+				{'.', '.', '.', '#', '#', '.'},
+				{'#', '.', '.', '.', '.', '#'},
+				{'.', '.', '#', '.', '.', '.'},
+				{'#', '.', '#', '.', '.', '#'},
+				{'#', '#', '#', '#', '.', '#'},
+			})};
+
+			io.startTests();
+
+			io.printTest(animateLights(lg1, 1), 11);
+			io.printTest(animateLights(lg1, 2), 8);
+			io.printTest(animateLights(lg1, 3), 4);
+			io.printTest(animateLights(lg1, 4), 4);
+
+			io.printTest(animateLights(lg2, 1, true), 18);
+			io.printTest(animateLights(lg2, 2, true), 18);
+			io.printTest(animateLights(lg2, 3, true), 18);
+			io.printTest(animateLights(lg2, 4, true), 14);
+			io.printTest(animateLights(lg2, 5, true), 17);
+
+			io.endTests();
+		}
+	}
 }
 
 
@@ -183,29 +217,12 @@ namespace AOC::Y2015::D18 {
 	void solvePuzzle()
 	{
 		IO io{{Year::y2015, Day::d18}};
-		//testPuzzle(io);
-		constexpr int loop_end{100};
-		LightGrid inputData{io.getInputFile()};
-		LightGrid gridPart1{inputData};
-		LightGrid gridPart2{inputData};
+		testPuzzle(io);
+		
+		constexpr int animationCount{100};
+		LightGrid startGrid{readLightGrid(io.getInputFile())};
 
-		for (int i{0}; i < loop_end; ++i) {
-			gridPart1.animateLights();
-		}
-		io.printSolution(gridPart1.accumulateData(), 1061);
-
-		gridPart2.turnOnEdges();
-		for (int i{0}; i < loop_end; ++i) {
-			gridPart2.animateLights();
-			gridPart2.turnOnEdges();
-		}
-		io.printSolution(gridPart2.accumulateData(), 1006);
-
-		//InputData inputData{io.getInputFile()};
-
-		//inputData.permutate(eggnog_volume);
-		//io.printSolution(inputData.getPermutations(), 1638);
-		//inputData.permutatePart2(eggnog_volume);
-		//io.printSolution(inputData.getPermutationsPart2(), 17);
+		io.printSolution(animateLights(startGrid, animationCount), 1061);
+		io.printSolution(animateLights(startGrid, animationCount, true), 1006);
 	}
 }

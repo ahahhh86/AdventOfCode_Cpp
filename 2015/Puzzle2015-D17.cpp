@@ -1,8 +1,5 @@
 module;
 
-#include <algorithm>
-#include <fstream>
-#include <iostream>
 #include <limits>
 #include <string>
 #include <vector>
@@ -15,115 +12,118 @@ import BasicImports;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * *
 
-namespace {
-	using vecSize_t = std::vector<std::string>::size_type;
-	constexpr int eggnog_volume{150};
+namespace { // Calculations
+	using ContainerVector = std::vector<int>;
 
-	class InputData
+	class Containers
 	{
 	public:
-		InputData() = delete;
-		InputData(const InputData&) = delete;
-		InputData(InputData&&) = delete;
-		explicit InputData(std::ifstream&& input);
-		~InputData() = default;
+		explicit Containers(ContainerVector&& containers);
 
-		InputData& operator=(const InputData&) = delete;
-		InputData& operator=(InputData&&) = delete;
-
-
-		int getPermutations() const
-			{return m_permutations;}
-		int getPermutationsPart2() const
-			{return m_permutationsPart2;}
-
-		void permutate(int freeVolume, const vecSize_t startPos = 0, int usedContainers = 0);
-		void permutatePart2(int freeVolume, const vecSize_t startPos = 0, int usedContainers = 0);
-
+		auto countCombinationsPart1(int freeVolume);
+		auto countCombinationsPart2(int freeVolume);
 
 	private:
-		std::vector<int> m_input{};
-		int m_permutations{0};
-		int m_permutationsPart2{0};
+		void getCombinationCountPart1(int freeVolume, std::size_t startPos, int usedContainers);
+		void getCombinationCountPart2(int freeVolume, std::size_t startPos, int usedContainers);
+
+		ContainerVector m_containers{};
+		std::pair<int, int> m_combinationCount{0, 0};
 		int m_minContainers{std::numeric_limits<int>::max()};
 	};
 
 
 
-	InputData::InputData(std::ifstream&& input)
+	Containers::Containers(ContainerVector&& containers):
+		m_containers{containers}
 	{
-		int buffer{};
-
-		while (!input.eof()) {
-			input >> buffer;
-			m_input.push_back(buffer);
-		}
-
-		if(input.fail()) throw AOC::aocError("Invalid input. Please check input data.");
+		// do nothing
 	}
 
 
 
-	void InputData::permutate(int freeVolume, const vecSize_t startPos, int usedContainers)
+	auto Containers::countCombinationsPart1(int freeVolume)
 	{
-		if ((startPos >= m_input.size()) || (freeVolume <= 0)) {
+		getCombinationCountPart1(freeVolume, 0, 0);
+		return m_combinationCount.first;
+	}
+
+
+
+	auto Containers::countCombinationsPart2(int freeVolume)
+	{
+		if (m_minContainers == std::numeric_limits<int>::max()) {
+			getCombinationCountPart1(freeVolume, 0, 0);
+		}
+
+		getCombinationCountPart2(freeVolume, 0, 0);
+		return m_combinationCount.second;
+	}
+
+
+
+	void Containers::getCombinationCountPart1(int freeVolume, std::size_t startPos, int usedContainers)
+	{
+		if ((startPos >= m_containers.size()) || (freeVolume <= 0)) {
 			return;
 		}
 
-		const vecSize_t new_startPos{startPos + 1};
-		permutate(freeVolume, new_startPos, usedContainers); // do not use this container
+		const auto newStartPos{startPos + 1};
 
+		// try combinations without the container at startPos
+		getCombinationCountPart1(freeVolume, newStartPos, usedContainers);
+
+		// try combinations including the container at startPos
 		++usedContainers;
-		freeVolume -= m_input[startPos];
-		permutate(freeVolume, new_startPos, usedContainers);
+		freeVolume -= m_containers[startPos];
+		getCombinationCountPart1(freeVolume, newStartPos, usedContainers);
+
 		if (freeVolume == 0) {
-			++m_permutations;
+			++m_combinationCount.first;
 			m_minContainers = std::min(m_minContainers, usedContainers);
 		}
 	}
 
 
 
-	void InputData::permutatePart2(int freeVolume, const vecSize_t startPos, int usedContainers)
+	void Containers::getCombinationCountPart2(int freeVolume, std::size_t startPos, int usedContainers)
 	{
-		if ((usedContainers >= m_minContainers) || (startPos >= m_input.size()) || (freeVolume <= 0)) {
+		if ((usedContainers >= m_minContainers) || (startPos >= m_containers.size()) || (freeVolume <= 0)) {
 			return;
 		}
 
-		const vecSize_t new_startPos = startPos + 1;
-		permutatePart2(freeVolume, new_startPos, usedContainers); // do not use this container
+		const auto newStartPos{startPos + 1};
 
+		// try combinations without the container at startPos
+		getCombinationCountPart2(freeVolume, newStartPos, usedContainers);
+
+		// try combinations including the container at startPos
 		++usedContainers;
-		freeVolume -= m_input[startPos];
-		permutatePart2(freeVolume, new_startPos, usedContainers);
-		if (freeVolume == 0) {
-			++m_permutationsPart2;
-		}
+		freeVolume -= m_containers[startPos];
+		getCombinationCountPart2(freeVolume, newStartPos, usedContainers);
 
+		if (freeVolume == 0) {
+			++m_combinationCount.second;
+		}
 	}
 }
 
 
-
 namespace { // Testing
-	// TODO:
-	//void testPuzzle(AOC::IO& io)
-	//{
-	//	if (AOC::debugMode) {
-	//		const StatVector stats{
-	//			{14, 10, 127},
-	//			{16, 11, 162},
-	//		};
+	void testPuzzle(AOC::IO& io)
+	{
+		if (AOC::debugMode) {
+			constexpr int eggnoggVolume{25};
+			Containers canisters{{20, 15, 10, 5, 5}};
 
-	//		io.startTests();
+			io.startTests();
 
-	//		const auto raceResult{getRaceResults(stats, 1000)};
-	//		io.printTest(raceResult.first, 1120);
-	//		io.printTest(raceResult.second, 689);
+			io.printTest(canisters.countCombinationsPart1(eggnoggVolume), 4);
+			io.printTest(canisters.countCombinationsPart2(eggnoggVolume), 3);
 
-	//		io.endTests();
-	//	}
-	//}
+			io.endTests();
+		}
+	}
 }
 
 
@@ -132,13 +132,12 @@ namespace AOC::Y2015::D17 {
 	void solvePuzzle()
 	{
 		IO io{{Year::y2015, Day::d17}};
-		//testPuzzle(io);
+		testPuzzle(io);
 
-		InputData inputData{io.getInputFile()};
+		constexpr int eggnoggVolume{150};
+		Containers canisters{io.readInputFile<int>()};
 
-		inputData.permutate(eggnog_volume);
-		io.printSolution(inputData.getPermutations(), 1638);
-		inputData.permutatePart2(eggnog_volume);
-		io.printSolution(inputData.getPermutationsPart2(), 17);
+		io.printSolution(canisters.countCombinationsPart1(eggnoggVolume), 1638);
+		io.printSolution(canisters.countCombinationsPart2(eggnoggVolume), 17);
 	}
 }

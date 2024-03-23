@@ -24,6 +24,8 @@ export namespace AOC {
 		Point2D operator-() const;
 		Point2D& operator+=(Point2D p);
 		Point2D& operator-=(Point2D p);
+
+		bool isInBounds(Point2D min, Point2D max) const;
 	};
 
 
@@ -73,6 +75,13 @@ export namespace AOC {
 	{
 		(*this) += (-p);
 		return *this;
+	}
+
+	template<typename T>
+	bool Point2D<T>::isInBounds(Point2D<T> min, Point2D<T> max) const
+	{
+		return min.x <= x && x <= max.x
+			&& min.y <= y && y <= max.y;
 	}
 
 
