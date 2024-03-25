@@ -2,10 +2,9 @@ module;
 
 #include <algorithm>
 #include <fstream>
-#include <iostream>
-#include <list>
+#include <set>
+#include <sstream>
 #include <string>
-#include <string_view>
 #include <vector>
 
 module Puzzle2015:D19;
@@ -16,97 +15,100 @@ import BasicImports;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * *
 
-namespace {
-	struct SReplacement
+namespace { // Input
+	struct Replacement
 	{
 		std::string find{""};
 		std::string replace{""};
 	};
-	using replacements_t = std::vector<SReplacement>;
+	using ReplacementVector = std::vector<Replacement>;
 
-	struct SInputData
+
+
+	struct CalibrationData
 	{
-		replacements_t replacements{};
+		ReplacementVector replacements{};
 		std::string medicineMolecule{""};
 	};
 
 
 
-	SInputData readInput(std::ifstream file)
+	auto readReplacement(std::stringstream&& str)
 	{
-		SInputData result{};
-		SReplacement buffer{};
+		Replacement result{};
 
-		while (true) {
-			constexpr auto sep_width{std::string_view("=> ").length()};
-			constexpr std::size_t max_find_molecule_length{10}; // the start molecule in my input has 1 or 2 letters, while the medicine molecule has a lot more
+		str >> result.find;
+		std::string buffer{};
+		str >> buffer;
+		if (buffer != "=>") throw AOC::InvalidFileInput();
+		str >> result.replace;
 
-			file >> buffer.find;
-			if (buffer.find.length() > max_find_molecule_length) {
-				break;
-			}
-			file.ignore(sep_width);
-			file >> buffer.replace;
-			result.replacements.push_back(buffer);
-		}
-		if(file.fail()) throw AOC::InvalidFileInput();
-
-		result.medicineMolecule = buffer.find;
 		return result;
 	}
 
 
-	
-	auto getReplacements(const SInputData& input)
-	{
-		std::list<std::string> distinctMolecules{};
-		std::string buffer{};
 
-		std::for_each(input.replacements.cbegin(), input.replacements.cend(), [&](const auto& data) {
+	auto readCalibrationData(std::vector<std::string>&& in)
+	{
+		const std::size_t replacementSize{in.size() - 2}; // without empty line and medicineMolecule line
+		CalibrationData result{
+			{},
+			*std::prev(in.cend()) // medicineMolecule is at the last line
+		};
+		result.replacements.reserve(replacementSize);
+
+		std::for_each(in.cbegin(), std::next(in.cbegin(), replacementSize), [&](const std::string& str) {
+			result.replacements.push_back(readReplacement(std::stringstream{str}));
+		});
+
+		return result;
+	}
+}
+
+
+	
+namespace { // Calculations
+	auto getReplacements(const CalibrationData& calib)
+	{
+		std::set<std::string> distinctMolecules{};
+
+		std::ranges::for_each(calib.replacements, [&](const auto& data) {
 			const std::size_t findLength{data.find.length()};
 
-			for (auto i{input.medicineMolecule.find(data.find, 0)}; i != std::string::npos; i = input.medicineMolecule.find(data.find, i + findLength)) {
-				buffer = input.medicineMolecule;
+			for (auto i{calib.medicineMolecule.find(data.find, 0)}; i != std::string::npos; i = calib.medicineMolecule.find(data.find, i + findLength)) {
+				std::string buffer{calib.medicineMolecule};
 				buffer.replace(i, findLength, data.replace);
-				distinctMolecules.push_back(buffer);
+				distinctMolecules.emplace(buffer);
 			}
 		});
 
-		distinctMolecules.sort();
-		distinctMolecules.unique();
 		return distinctMolecules.size();
-	}
-
-
-
-	auto buildMedicineMolecule(const SInputData&/* input*/)
-	{
-		// TODO
-		return std::size_t{0};//result;
 	}
 }
 
 
 
 namespace { // Testing
-	// TODO:
-	//void testPuzzle(AOC::IO& io)
-	//{
-	//	if (AOC::debugMode) {
-	//		const StatVector stats{
-	//			{14, 10, 127},
-	//			{16, 11, 162},
-	//		};
+	void testPuzzle(AOC::IO& io)
+	{
+		if (AOC::debugMode) {
+			const CalibrationData test1{
+				{{"H", "HO"}, {"H", "OH"}, {"O", "HH"}},
+				"HOH",
+			};
+			const CalibrationData test2{
+				{{"H", "HO"}, {"H", "OH"}, {"O", "HH"}},
+				"HOHOHO",
+			};
 
-	//		io.startTests();
+			io.startTests();
 
-	//		const auto raceResult{getRaceResults(stats, 1000)};
-	//		io.printTest(raceResult.first, 1120);
-	//		io.printTest(raceResult.second, 689);
+			io.printTest(getReplacements(test1), 4ULL);
+			io.printTest(getReplacements(test2), 7ULL);
 
-	//		io.endTests();
-	//	}
-	//}
+			io.endTests();
+		}
+	}
 }
 
 
@@ -115,11 +117,9 @@ namespace AOC::Y2015::D19 {
 	void solvePuzzle()
 	{
 		IO io{{Year::y2015, Day::d19}};
-		//testPuzzle(io);
+		testPuzzle(io);
 
-		SInputData input{readInput(io.getInputFile())};
-
-		io.printSolution(getReplacements(input), std::size_t{518});
-		io.printSolution(buildMedicineMolecule(input), std::size_t{0});
+		CalibrationData cd{readCalibrationData(io.readInputFile<std::string>())};
+		io.printSolution(getReplacements(cd), std::size_t{518});
 	}
 }

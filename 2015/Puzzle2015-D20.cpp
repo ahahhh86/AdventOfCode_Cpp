@@ -11,20 +11,28 @@ import BasicImports;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * *
 
-namespace {
-	using uint_t = unsigned int;
+namespace { // Input
+	auto readMaxPresents(std::ifstream&& in)
+	{
+		int buffer{};
+		in >> buffer;
+		if (buffer == 0) throw AOC::InvalidFileInput();
+		return buffer;
+	}
+}
 
 
 
+namespace Part1 { // Calculations
 	// WARNING: takes (on my computer) about 10 min. to find the right solution
 	// TODO: How to make faster
-	uint_t calculatePresents(unsigned int houseIndex)
+	static auto calculatePresents(int houseIndex)
 	{
-		constexpr uint_t multiplicator{10};			// to save some operations, just do this once at the end
-		const uint_t loop_end{houseIndex / 2};		// elves between houseIndex/2 and houseIndex will not stop here
-		uint_t result = 1 + houseIndex;				// elves 1 and houseIndex will always stop here
+		constexpr int multiplicator{10};		// to save some operations, just do this once at the end
+		const int loop_end{houseIndex / 2};		// elves between houseIndex/2 and houseIndex will not stop here
+		int result {1 + houseIndex};			// elves 1 and houseIndex will always stop here
 
-		for (uint_t i{2}; i <= loop_end; ++i) {
+		for (int i{2}; i <= loop_end; ++i) {
 			if (houseIndex % i == 0) {
 				result += i;
 			}
@@ -32,17 +40,19 @@ namespace {
 
 		return result * multiplicator;
 	}
+}
 
 
 
-	uint_t calculatePresentsPart2(unsigned int houseIndex)
+namespace Part2 { // Calculations
+	static auto calculatePresents(int houseIndex)
 	{
-		constexpr uint_t max_presents_per_elf{50};
-		constexpr uint_t multiplicator{11};							// to save some operations, just do this once at the end
-		const uint_t loop_end{houseIndex / max_presents_per_elf};
-		uint_t result = houseIndex;									// Assume houseIndex > 50, skip first house
+		constexpr int max_presents_per_elf{50};
+		constexpr int multiplicator{11};							// to save some operations, just do this once at the end
+		const int loop_end{houseIndex / max_presents_per_elf};
+		int result {houseIndex};									// Assume houseIndex > 50, skip first house
 
-		for (uint_t i{houseIndex / 2}; i >= loop_end; --i) {
+		for (int i{houseIndex / 2}; i >= loop_end; --i) {
 			if (houseIndex % i == 0) {
 				result += i;
 			}
@@ -83,20 +93,18 @@ namespace AOC::Y2015::D20 {
 		IO io{{Year::y2015, Day::d20}};
 		//testPuzzle(io);
 
-		uint_t input{};
-		io.getInputFile() >> input;
-		if (input == 0) throw AOC::InvalidFileInput();
+		const int input{readMaxPresents(io.getInputFile())};
 
-		uint_t houseIndex{2};
-		//uint_t houseIndex {665270}; // get headstart for debugging
-		while (calculatePresents(houseIndex) <= input) {
+		//int houseIndex{2};
+		int houseIndex {665270}; // get headstart for debugging
+		while (Part1::calculatePresents(houseIndex) <= input) {
 			++houseIndex;
 		}
-		io.printSolution(houseIndex, 665280U);
+		io.printSolution(houseIndex, 665280);
 
-		while (calculatePresentsPart2(houseIndex) <= input) {
+		while (Part2::calculatePresents(houseIndex) <= input) {
 			++houseIndex;
 		}
-		io.printSolution(houseIndex, 705600U);
+		io.printSolution(houseIndex, 705600);
 	}
 }

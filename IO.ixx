@@ -142,16 +142,33 @@ namespace AOC {
 		std::vector<T> result{};
 		std::ifstream in{getInputFile()};
 
-		for (std::size_t i{1}; !in.eof(); ++i)
+		for (std::size_t i{1}; !in.eof(); ++i) // TODO: Do not use try als flow control
 		{
 			T buffer{};
 			try {
 				in >> buffer;
 				result.push_back(buffer);
 			} catch (InvalidFileInput&) {
-				if (in.eof()) break;
+				if (in.eof()) {break;}
 				throw InvalidFileLine(i);
 			}
+		}
+
+		return result;
+	}
+
+
+
+	template <>
+	std::vector<std::string> IO::readInputFile() const
+	{
+		std::vector<std::string> result{};
+		std::ifstream in{getInputFile()};
+
+		for (std::size_t i{1}; !in.eof(); ++i) {
+			std::string buffer{};
+			std::getline(in, buffer);
+			result.push_back(buffer);
 		}
 
 		return result;
