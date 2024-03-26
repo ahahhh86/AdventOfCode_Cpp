@@ -1,15 +1,9 @@
 module;
 
-#include <algorithm>
 #include <fstream>
-#include <iostream>
-#include <list>
-#include <map>
-#include <numeric>
 #include <string>
 #include <string_view>
 #include <vector>
-#include <utility>
 
 module Puzzle2015:D23;
 
@@ -19,85 +13,80 @@ import BasicImports;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * *
 
-namespace {
-	using register_t = unsigned int;
+namespace { // Input
+	using RegisterValue = unsigned int;
 
-	enum class EInstruction { hlf, tpl, inc, jmp, jie, jio };
-	enum class ERegister { a, b };
+	enum class Instruction { Half, Triple, Inc, Jump, JumpIfEven, JumpIfOdd };
+	enum class Register { a, b };
 
 
 
-	struct SInputData
+	struct Procedure
 	{
-		EInstruction instruction{EInstruction::inc};
-		ERegister registr{ERegister::a}; // register is a keyword
-		int value{0};
+		Instruction instruction{Instruction::Inc};
+		Register registr{Register::a}; // register is a keyword
+		int next{1};
 	};
-	using InputVector_t = std::vector<SInputData>;
+	using Program = std::vector<Procedure>;
 
 
 
-	struct SComputerData
+	auto stringToInstructionValue(std::string_view str)
 	{
-		register_t a{0};
-		register_t b{0};
-		InputVector_t::size_type index{0};
-	};
-
-
-
-	SInputData readInputData(std::ifstream& input)
-	{
-		SInputData result{};
-		std::string buffer{};
-
-		input >> buffer;
-		if (buffer == "hlf") {
-			result.instruction = EInstruction::hlf;
-		} else if (buffer == "tpl") {
-			result.instruction = EInstruction::tpl;
-		} else if (buffer == "inc") {
-			result.instruction = EInstruction::inc;
-		} else if (buffer == "jmp") {
-			result.instruction = EInstruction::jmp;
-		} else if (buffer == "jie") {
-			result.instruction = EInstruction::jie;
-		} else if (buffer == "jio") {
-			result.instruction = EInstruction::jio;
+		if (str == "hlf") {
+			return Instruction::Half;
+		} else if (str == "tpl") {
+			return Instruction::Triple;
+		} else if (str == "inc") {
+			return Instruction::Inc;
+		} else if (str == "jmp") {
+			return Instruction::Jump;
+		} else if (str == "jie") {
+			return Instruction::JumpIfEven;
+		} else if (str == "jio") {
+			return Instruction::JumpIfOdd;
 		} else {
 			throw AOC::InvalidFileInput();
 		}
+	}
 
 
-		const auto getRegister = [&](std::string_view str) {
-			if (str == "a") {
-				return ERegister::a;
-			} else if (str == "b") {
-				return ERegister::b;
-			} else {
-				throw AOC::InvalidFileInput();
-			}
-		};
+
+	auto strToRegister(std::string_view str) {
+		if (str == "a" || str == "a,") {
+			return Register::a;
+		} else if (str == "b" || str == "b,") {
+			return Register::b;
+		} else {
+			throw AOC::InvalidFileInput();
+		}
+	};
 
 
-		switch (result.instruction) {
-		case EInstruction::jmp:
-			input >> result.value;
+
+	auto& operator>>(std::ifstream& in, Procedure& proc)
+	{
+		std::string buffer{};
+		in >> buffer;
+		proc.instruction = stringToInstructionValue(buffer);
+
+		switch (proc.instruction) {
+		case Instruction::Jump:
+			in >> proc.next;
 			break;
 
-		case EInstruction::hlf:
-		case EInstruction::tpl:
-		case EInstruction::inc:
-			input >> buffer;
-			result.registr = getRegister(buffer);
+		case Instruction::Half:
+		case Instruction::Triple:
+		case Instruction::Inc:
+			in >> buffer;
+			proc.registr = strToRegister(buffer);
 			break;
 
-		case EInstruction::jie:
-		case EInstruction::jio:
-			input >> buffer;
-			buffer.pop_back(); // remove ','
-			result.registr = getRegister(buffer);
-			input >> result.value;
+		case Instruction::JumpIfEven:
+		case Instruction::JumpIfOdd:
+			in >> buffer;
+			proc.registr = strToRegister(buffer);
+			in >> proc.next;
 			break;
 
 		default:
@@ -105,99 +94,108 @@ namespace {
 			break;
 		}
 
-		if(input.fail()) throw AOC::InvalidFileInput();
-		return result;
+		if (in.fail()) throw AOC::InvalidFileInput();
+
+		return in;
 	}
+}
 
 
 
-	// --- readInputData() ---
-	InputVector_t readInputVector(std::ifstream input)
+namespace { // Calculations
+	struct Computer
 	{
-		InputVector_t result{};
-
-		while (!input.eof()) {
-			result.push_back(readInputData(input));
-		}
-
-		return result;
-	}
+		RegisterValue a{0};
+		RegisterValue b{0};
+		std::size_t index{0};
+	};
 
 
 
-	// --- getNextLine() ---
-	SComputerData getNextLine(const SComputerData& data, const InputVector_t& vec)
+	Computer getNextLine(const Computer& computer, const Program& program)
 	{
-		SComputerData result{data};
-		const SInputData& input{vec[data.index]};
-		register_t& reg{input.registr == ERegister::a ? result.a : result.b};
+		Computer result{computer};
+		const Procedure& proc{program[computer.index]};
+		RegisterValue& registr{proc.registr == Register::a ? result.a : result.b};
 
-		switch (input.instruction) {
-		case EInstruction::jmp:
-			result.index += input.value;
+		switch (proc.instruction) {
+		case Instruction::Jump:
+			result.index += proc.next;
 			break;
 
-		case EInstruction::hlf:
-			reg /= 2;
+		case Instruction::Half:
+			registr /= 2;
 			++result.index;
 			break;
 
-		case EInstruction::tpl:
-			reg *= 3; // @suppress("Avoid magic numbers")
+		case Instruction::Triple:
+			registr *= 3;
 			++result.index;
 			break;
 
-		case EInstruction::inc:
-			++reg;
+		case Instruction::Inc:
+			++registr;
 			++result.index;
 			break;
 
-		case EInstruction::jie:
-			if (reg % 2 == 0) {
-				result.index += input.value;
+		case Instruction::JumpIfEven:
+			if (registr % 2 == 0) {
+				result.index += proc.next;
 			} else {
 				++result.index;
 			}
 			break;
 
-		case EInstruction::jio:
-			if (reg == 1) {
-				result.index += input.value;
+		case Instruction::JumpIfOdd:
+			if (registr == 1) {
+				result.index += proc.next;
 			} else {
 				++result.index;
 			}
 			break;
 
 		default:
-			throw AOC::InvalidFileInput(); // Should already been handled, but switch should have a default
+			throw AOC::aocError("getNextLine(): invalid instruction.");
 			break;
 		}
 
 		return result;
+	}
+
+
+
+	auto computeProgam(const Program& program, RegisterValue a = 0)
+	{
+		Computer comp{a};
+
+		while (comp.index < program.size()) {
+			comp = getNextLine(comp, program);
+		}
+
+		return comp.b;
 	}
 }
 
 
 
 namespace { // Testing
-	// TODO:
-	//void testPuzzle(AOC::IO& io)
-	//{
-	//	if (AOC::debugMode) {
-	//		const StatVector stats{
-	//			{14, 10, 127},
-	//			{16, 11, 162},
-	//		};
+	void testPuzzle(AOC::IO& io)
+	{
+		if (AOC::debugMode) {
+			const Program prog{
+				{Instruction::Inc, Register::b, 1},
+				{Instruction::JumpIfOdd, Register::b, 2},
+				{Instruction::Triple, Register::b, 1},
+				{Instruction::Inc, Register::b, 1},
+			};
 
-	//		io.startTests();
+			io.startTests();
 
-	//		const auto raceResult{getRaceResults(stats, 1000)};
-	//		io.printTest(raceResult.first, 1120);
-	//		io.printTest(raceResult.second, 689);
+			io.printTest(computeProgam(prog), 2U);
 
-	//		io.endTests();
-	//	}
-	//}
+			io.endTests();
+		}
+	}
 }
 
 
@@ -206,22 +204,11 @@ namespace AOC::Y2015::D23 {
 	void solvePuzzle()
 	{
 		IO io{{Year::y2015, Day::d23}};
-		//testPuzzle(io);
-		InputVector_t inputData{readInputVector(io.getInputFile())};
+		testPuzzle(io);
 
-		SComputerData values{};
-		const auto loop_end{inputData.size()};
+		const auto program{io.readInputFile<Procedure>()};
 
-		while (values.index < loop_end) {
-			values = getNextLine(values, inputData);
-		}
-
-		io.printSolution(values.b, 170U);
-
-		values = {1, 0, 0};
-		while (values.index < loop_end) {
-			values = getNextLine(values, inputData);
-		}
-		io.printSolution(values.b, 247U);
+		io.printSolution(computeProgam(program), 170U);
+		io.printSolution(computeProgam(program, 1), 247U);
 	}
 }

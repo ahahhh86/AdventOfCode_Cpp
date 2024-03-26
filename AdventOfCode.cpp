@@ -23,10 +23,10 @@ namespace {
 	{
 		using namespace AOC;
 
-		constexpr Date startDate{Year::y2015, Day::d01};
-		constexpr Date maxDate{Year::y2016, Day::d01};
-
-		for (Date i{startDate}; i < maxDate; ++i) {
+		for (Date i{Year::y2015, Day::d01}; i <= Date{Year::y2015, Day::d25}; ++i) {
+			solvePuzzle(i);
+		}
+		for (Date i{Year::y2023, Day::d01}; i <= Date{Year::y2023, Day::d25}; ++i) {
 			solvePuzzle(i);
 		}
 	}
@@ -41,7 +41,7 @@ int main()
 	std::cout << "* * * Advent of Code  * * * * * * * * *\n\n";
 
 	//if (debugMode) {
-		solvePuzzle({Year::y2015, Day::d20});
+		solvePuzzle({Year::y2023, Day::d04});
 	//} else {
 		//solveAOC();
 	//}

@@ -65,6 +65,11 @@ namespace AOC {
 		return d1.day == d2.day && d1.year == d2.year;
 	}
 
+	bool operator!=(Date d1, Date d2)
+	{
+		return !(d1 == d2);
+	}
+
 
 
 	bool operator<(Date d1, Date d2)
@@ -74,6 +79,21 @@ namespace AOC {
 		} else {
 			return d1.year < d2.year;
 		}
+	}
+
+	bool operator>(Date d1, Date d2)
+	{
+		return d2 < d1;
+	}
+
+	bool operator<=(Date d1, Date d2)
+	{
+		return !(d2 < d1);
+	}
+
+	bool operator>=(Date d1, Date d2)
+	{
+		return !(d1 < d2);
 	}
 
 

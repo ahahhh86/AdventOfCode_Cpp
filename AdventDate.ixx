@@ -78,7 +78,11 @@ export namespace AOC {
 	Date& operator++(Date& date);		// increase date (for loops)
 
 	bool operator==(Date d1, Date d2);
+	bool operator!=(Date d1, Date d2);
 	bool operator<(Date d1, Date d2);
+	bool operator>(Date d1, Date d2);
+	bool operator<=(Date d1, Date d2);
+	bool operator>=(Date d1, Date d2);
 
 	auto& operator<<(std::ostream& out, Date d);
 	void printDate(Date d);

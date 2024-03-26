@@ -64,25 +64,41 @@ namespace Part2 { // Calculations
 
 
 
+namespace { // Calculations
+	auto findHouse(int presentCount, int(*fcn)(int))
+	{
+		int houseIndex{2};
+		//int houseIndex{665270}; // get headstart for debugging
+
+		while (fcn(houseIndex) <= presentCount) {
+			++houseIndex;
+		}
+
+		return houseIndex;
+	}
+}
+
+
+
 namespace { // Testing
-	// TODO:
-	//void testPuzzle(AOC::IO& io)
-	//{
-	//	if (AOC::debugMode) {
-	//		const StatVector stats{
-	//			{14, 10, 127},
-	//			{16, 11, 162},
-	//		};
+	void testPuzzle(AOC::IO& io)
+	{
+		if (AOC::debugMode) {
+			io.startTests();
 
-	//		io.startTests();
+			//io.printTest(Part1::calculatePresents(1), 10); // this will fail
+			io.printTest(Part1::calculatePresents(2), 30);
+			io.printTest(Part1::calculatePresents(3), 40);
+			io.printTest(Part1::calculatePresents(4), 70);
+			io.printTest(Part1::calculatePresents(5), 60);
+			io.printTest(Part1::calculatePresents(6), 120);
+			io.printTest(Part1::calculatePresents(7), 80);
+			io.printTest(Part1::calculatePresents(8), 150);
+			io.printTest(Part1::calculatePresents(9), 130);
 
-	//		const auto raceResult{getRaceResults(stats, 1000)};
-	//		io.printTest(raceResult.first, 1120);
-	//		io.printTest(raceResult.second, 689);
-
-	//		io.endTests();
-	//	}
-	//}
+			io.endTests();
+		}
+	}
 }
 
 
@@ -91,20 +107,11 @@ namespace AOC::Y2015::D20 {
 	void solvePuzzle()
 	{
 		IO io{{Year::y2015, Day::d20}};
-		//testPuzzle(io);
+		testPuzzle(io);
 
 		const int input{readMaxPresents(io.getInputFile())};
 
-		//int houseIndex{2};
-		int houseIndex {665270}; // get headstart for debugging
-		while (Part1::calculatePresents(houseIndex) <= input) {
-			++houseIndex;
-		}
-		io.printSolution(houseIndex, 665280);
-
-		while (Part2::calculatePresents(houseIndex) <= input) {
-			++houseIndex;
-		}
-		io.printSolution(houseIndex, 705600);
+		io.printSolution(findHouse(input, Part1::calculatePresents), 665280);
+		io.printSolution(findHouse(input, Part2::calculatePresents), 705600);
 	}
 }

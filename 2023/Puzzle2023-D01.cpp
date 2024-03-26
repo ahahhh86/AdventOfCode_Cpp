@@ -15,16 +15,16 @@ import BasicImports;
 // * * * * * * * * * * * * * * * * * * * * * * * * *
 
 namespace { // Calculations
-	const std::string_view digitString{"0123456789"};
+	constexpr std::string_view digitString{"0123456789"};
 	const std::vector<std::string_view> numberStrings{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
 
 
-	auto findFirst(std::string_view line, bool withPart2)
+	auto findFirst(std::string_view line, bool part2)
 	{
 		auto pos{line.find_first_of(digitString)};
 		auto digit{std::stoi(std::string{line[pos]})};
 
-		if (withPart2) {
+		if (part2) {
 			int index{1}; // numberStrings[0] = "one"
 			std::ranges::for_each(numberStrings, [&](std::string_view str) {
 				const auto foundPos{line.find(str)};
@@ -41,12 +41,12 @@ namespace { // Calculations
 
 
 
-	auto findLast(std::string_view line, bool withPart2)
+	auto findLast(std::string_view line, bool part2)
 	{
 		auto pos{line.find_last_of(digitString)};
 		auto digit{std::stoi(std::string{line[pos]})};
 
-		if (withPart2) {
+		if (part2) {
 			int index{1}; // numberStrings[0] = "one"
 			std::ranges::for_each(numberStrings, [&](std::string_view str) {
 				const auto foundPos{line.rfind(str)};
@@ -63,17 +63,17 @@ namespace { // Calculations
 
 
 
-	auto getCalibrationValue(std::string_view line, bool withPart2)
+	auto getCalibrationValue(std::string_view line, bool part2)
 	{
-		return findFirst(line, withPart2) * 10 + findLast(line, withPart2);
+		return findFirst(line, part2) * 10 + findLast(line, part2);
 	}
 
 
 
-	auto accumulateValues(const std::vector<std::string>& input, bool withPart2)
+	auto accumulateValues(const std::vector<std::string>& input, bool part2)
 	{
 		return std::accumulate(input.cbegin(), input.cend(), 0, [&](int sum, std::string_view i) {
-			return sum + getCalibrationValue(i, withPart2);
+			return sum + getCalibrationValue(i, part2);
 		});
 	}
 }

@@ -25,6 +25,8 @@ namespace { // Input
 		int red{0};
 	};
 
+
+
 	constexpr int invalidGame{0};
 	struct Game
 	{
@@ -51,6 +53,7 @@ namespace { // Input
 
 	auto readCubes(std::stringstream& in)
 	{
+		// format example: "3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green"
 		CubeCounts result{};
 
 		while (!in.eof()) {
@@ -121,7 +124,7 @@ namespace { // Calculations
 		constexpr int maxRedCount{12};
 
 		for (const CubeCounts& cubes : game.grab) {
-			if (cubes.blue > maxBlueCount || cubes.green > maxGreenCount || cubes.red > maxRedCount) return 0;
+			if (cubes.blue > maxBlueCount || cubes.green > maxGreenCount || cubes.red > maxRedCount) return invalidGame;
 		};
 
 		return game.number;

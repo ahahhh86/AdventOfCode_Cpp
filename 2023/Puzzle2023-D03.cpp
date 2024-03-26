@@ -117,18 +117,12 @@ namespace { // Input
 
 
 namespace { // Calculations
-	bool isInRect(const Point topLeft, const Point bottomRight, const Point value)
-	{
-		return topLeft.x <= value.x && value.x <= bottomRight.x
-			&& topLeft.y <= value.y && value.y <= bottomRight.y;
-	}
-
-
-
 	auto getPartNumber(const PartNumber& part, const PointVector& symbols)
 	{
 		for (const Point& pos : symbols) {
-			if (isInRect({part.startPos.x - 1, part.startPos.y - 1}, {part.startPos.x + 1, part.startPos.y + part.length}, pos)) return part.value;
+			if (pos.isInBounds({part.startPos.x - 1, part.startPos.y - 1}, {part.startPos.x + 1, part.startPos.y + part.length})) {
+				return part.value;
+			}
 		}
 
 		return 0;
@@ -149,7 +143,7 @@ namespace { // Calculations
 	{
 		std::vector<int> nearParts{};
 		const auto countNearParts{std::ranges::count_if(parts, [&](const PartNumber& i) {
-			if (isInRect({i.startPos.x - 1, i.startPos.y - 1}, {i.startPos.x + 1, i.startPos.y + i.length}, gear)) {
+			if (gear.isInBounds({i.startPos.x - 1, i.startPos.y - 1}, {i.startPos.x + 1, i.startPos.y + i.length})) {
 				nearParts.push_back(i.value);
 				return true;
 			}
@@ -210,6 +204,7 @@ namespace AOC::Y2023::D03 { // Solution
 		testPuzzle(io);
 
 		const auto schematic{readSchematic(io.readInputFile<std::string>())};
+
 		io.printSolution(accumulateEngineParts(schematic), 540131);
 		io.printSolution(accumulateGearRatios(schematic), 86879020);
 	}

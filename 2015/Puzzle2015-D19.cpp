@@ -50,7 +50,7 @@ namespace { // Input
 
 	auto readCalibrationData(std::vector<std::string>&& in)
 	{
-		const std::size_t replacementSize{in.size() - 2}; // without empty line and medicineMolecule line
+		const auto replacementSize{in.size() - 2ULL}; // without empty line and medicineMolecule line
 		CalibrationData result{
 			{},
 			*std::prev(in.cend()) // medicineMolecule is at the last line
