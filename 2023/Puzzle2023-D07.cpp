@@ -115,7 +115,7 @@ namespace { // Calculations
 		case  9: return HandType::twoPair;		// cardCount = {2, 2, 2, 2, 1}
 		case  7: return HandType::onePair;		// cardCount = {2, 2, 1, 1, 1}
 		case  5: return HandType::highCard;		// cardCount = {1, 1, 1, 1, 1}
-		default: throw AOC::InvalidInputData("Part1::getHandTypeNoJoker");
+		default: throw AOC::InvalidInputData("getHandTypeNoJoker()");
 		}
 	}
 }
@@ -145,10 +145,10 @@ namespace Part1 { // Calculations
 
 			if (handType1 == handType2) {
 				for (std::size_t i{0}; i < handSize; ++i) {
-					if (h1[i] != h2[i]) return h1[i] < h2[i];
+					if (h1[i] != h2[i]) {return h1[i] < h2[i];}
 				}
 
-				throw AOC::InvalidInputData("operator<");
+				throw AOC::InvalidInputData("Part1::isSmallerHand()");
 			} else {
 				return handType1 < handType2;
 			}
@@ -175,7 +175,7 @@ namespace Part2 { // Calculations
 			case  8: return HandType::fullHouse;	// cardCount = {2, 2, 2, 2, 0}
 			case  6: return HandType::threeOfAKind;	// cardCount = {2, 2, 1, 1, 0}
 			case  4: return HandType::onePair;		// cardCount = {1, 1, 1, 1, 0}
-			default: throw AOC::InvalidInputData("Part2::getHandTypeOneJoker");
+			default: throw AOC::InvalidInputData("Part2::getHandTypeOneJoker()");
 			}
 		}
 
@@ -187,7 +187,7 @@ namespace Part2 { // Calculations
 			case 9: return HandType::fiveOfAKind;	// cardCount = {3, 3, 3, 0, 0}
 			case 5: return HandType::fourOfAKind;	// cardCount = {2, 2, 1, 0, 0}
 			case 3: return HandType::threeOfAKind;	// cardCount = {1, 1, 1, 0, 0}
-			default: throw AOC::InvalidInputData("Part2::getHandTypeTwoJokers");
+			default: throw AOC::InvalidInputData("Part2::getHandTypeTwoJokers()");
 			}
 		}
 
@@ -198,7 +198,7 @@ namespace Part2 { // Calculations
 			switch (cardSum) {
 			case 4: return HandType::fiveOfAKind;	// cardCount = {2, 2, 0, 0, 0}
 			case 2: return HandType::fourOfAKind;	// cardCount = {1, 1, 0, 0, 0}
-			default: throw AOC::InvalidInputData("Part2::getHandTypeThreeJokers");
+			default: throw AOC::InvalidInputData("Part2::getHandTypeThreeJokers()");
 			}
 		}
 
@@ -225,9 +225,9 @@ namespace Part2 { // Calculations
 			case 1: return getHandTypeOneJoker(cardSum);
 			case 2: return getHandTypeTwoJokers(cardSum);
 			case 3: return getHandTypeThreeJokers(cardSum);
-			case 4:
+			case 4: // fallthrough
 			case 5: return HandType::fiveOfAKind;
-			default: throw AOC::InvalidInputData("Part2::getHandType");
+			default: throw AOC::InvalidInputData("Part2::getHandType()");
 			}
 
 		}
@@ -248,7 +248,7 @@ namespace Part2 { // Calculations
 					}
 				}
 
-				throw AOC::InvalidInputData("isSmallerHand");
+				throw AOC::InvalidInputData("Part2::isSmallerHand()");
 			} else {
 				return handType1 < handType2;
 			}
@@ -262,6 +262,7 @@ namespace Part2 { // Calculations
 		}
 	}
 }
+
 
 
 namespace {

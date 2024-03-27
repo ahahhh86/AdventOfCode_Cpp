@@ -1,7 +1,6 @@
 module;
 
 #include <algorithm>
-#include <cmath>
 #include <fstream>
 #include <numeric>
 #include <sstream>
@@ -115,7 +114,7 @@ namespace { // Calculations
 	auto calculatePoints(const Scratchcard& card)
 	{
 		const auto winCount{countWins(card)};
-		return winCount > 2 ? static_cast<int>(1 << (winCount-1)) : winCount; // 1 << (winCount-1) = 2^(winCount-1)
+		return winCount > 2 ? (1 << (winCount-1)) : winCount; // 1 << (winCount-1) = 2^(winCount-1)
 	}
 
 

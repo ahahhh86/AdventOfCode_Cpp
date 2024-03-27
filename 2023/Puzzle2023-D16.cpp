@@ -1,7 +1,6 @@
 module;
 
 #include <algorithm>
-//#include <numeric>
 #include <set>
 #include <string>
 #include <string_view>
@@ -49,7 +48,7 @@ namespace { // Input
 		Contraption result{};
 		result.reserve(strs.size());
 
-		int index{1};
+		std::size_t index{1};
 		std::ranges::for_each(strs, [&](std::string_view str) {
 			if (str.size() != strs[0].size()) throw AOC::InvalidFileLine(index);
 
@@ -71,6 +70,13 @@ namespace { // Input
 
 
 namespace { // Calculations
+	using Point = AOC::Point2D<int>;
+
+	constexpr Point north{-1, 0};
+	constexpr Point east{0, 1};
+	constexpr Point south{1, 0};
+	constexpr Point west{0, -1};
+
 	enum class Direction
 	{
 		north,
@@ -79,25 +85,23 @@ namespace { // Calculations
 		west,
 	};
 
-	using Point = AOC::Point2D<int>;
+
 
 	struct Beam
 	{
 		Point pos{0, 0};
 		Direction dir{Direction::east};
 	};
+	using Beams = std::vector<Beam>;
+
+
 
 	bool operator==(const Beam& b1, const Beam& b2)
 	{
 		return b1.dir == b2.dir && b1.pos == b2.pos;
 	}
 
-	constexpr Point north{-1, 0};
-	constexpr Point east{0, 1};
-	constexpr Point south{1, 0};
-	constexpr Point west{0, -1};
 
-	using Beams = std::vector<Beam>;
 
 	void setNextBeamEmpty(Beam& beam)
 	{
@@ -201,17 +205,13 @@ namespace { // Calculations
 		}
 	}
 
-	bool isInBounds(Point pos, int sizeX, int sizeY)
-	{
-		return 0 <= pos.x && pos.x < sizeX
-			&& 0 <= pos.y && pos.y < sizeY;
-	}
+
 
 	auto getNextBeamPos(const Beam& beam, const Contraption& contraption)
 	{
 		Beams result{beam};
 
-		switch (contraption[beam.pos.x][beam.pos.y]) {
+		switch (contraption[beam.pos.X()][beam.pos.Y()]) {
 		case ContraptionPart::empty:
 			setNextBeamEmpty(result[0]);
 			break;
@@ -230,11 +230,13 @@ namespace { // Calculations
 		}
 
 		std::erase_if(result, [&](const Beam& b) {
-			return !isInBounds(b.pos, contraption.size(), contraption[0].size());
+			return !b.pos.isInBounds({0, 0}, {static_cast<int>(contraption.size() - 1), static_cast<int>(contraption[0].size() - 1)});
 		});
 
 		return result;
 	}
+
+
 
 	void removeDouble(Beams& beam, const Beams& energized)
 	{
@@ -242,6 +244,8 @@ namespace { // Calculations
 			return std::find(energized.cbegin(), energized.cend(), b) != energized.cend();
 		});
 	}
+
+
 
 	auto calculateEnergized(const Contraption& contraption, const Beam& start = {})
 	{
@@ -269,6 +273,8 @@ namespace { // Calculations
 		});
 		return static_cast<int>(result.size());
 	}
+
+
 
 	auto getMaxEnergized(const Contraption& contraption)
 	{
@@ -331,6 +337,6 @@ namespace AOC::Y2023::D16 { // Solution
 
 		const auto contraption{readContraption(io.readInputFile<std::string>())};
 		io.printSolution(calculateEnergized(contraption), 7472);
-		io.printSolution(getMaxEnergized(contraption), 7716);
+		io.printSolution(getMaxEnergized(contraption), 7716);		// for me ca. 90s
 	}
 }

@@ -19,6 +19,8 @@ namespace { // Input
 	using Number = long long;
 	using NumberVec = std::vector<Number>;
 
+
+
 	struct Race
 	{
 		Number time{};
@@ -101,7 +103,7 @@ namespace { // Calculations
 		for (Number holdTime{1}; holdTime < race.time; ++holdTime) {
 			if (race.distance < calculateDistance(holdTime, race.time)) {
 				// calculateDistance() is symmetric with a peak in the middle,
-				// so we can abort if we find the first way to win
+				// so we can abort, if we find the first way to win
 				return race.time - holdTime * 2 + 1;
 			}
 		}

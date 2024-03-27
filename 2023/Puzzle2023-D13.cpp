@@ -17,11 +17,12 @@ import BasicImports;
 namespace { // Input
 	// TODO: #. to enum class
 	using Pattern = std::vector<std::string>;
+	using Notes = std::vector<Pattern>;
 
 	auto& operator>>(std::ifstream& in, Pattern& pattern)
 	{
 		pattern = {};
-		for (;;) {
+		while (true) {
 			std::string buffer{};
 			std::getline(in, buffer);
 			if (buffer == "") {
@@ -39,11 +40,8 @@ namespace { // Input
 	bool isValid(const Pattern& pattern)
 	{
 		for (std::string_view str : pattern) {
-			if (str.size() != pattern[0].size()) return false;
-		}
-
-		for (std::string_view str : pattern) {
-			if (str.find_first_not_of("#.") != std::string_view::npos) return false;
+			if (str.size() != pattern[0].size()) {return false;}
+			if (str.find_first_not_of("#.") != std::string_view::npos) { return false; }
 		}
 
 		return true;
@@ -51,12 +49,12 @@ namespace { // Input
 
 
 
-	using Notes = std::vector<Pattern>;
 	void validate(const Notes& notes)
 	{
 		std::size_t index{1};
 		std::ranges::for_each(notes, [&](const Pattern& p) {
-			if (!isValid(p)) throw AOC::InvalidFileLine(index);
+			if (!isValid(p)) {throw AOC::InvalidFileLine(index);}
+			++index;
 		});
 	}
 }
@@ -64,9 +62,9 @@ namespace { // Input
 
 
 namespace { // Calculations
-	bool isReflectiveLine(const Pattern& pattern, std::size_t index, std::size_t offset = 0)
+	bool isReflectiveLine(const Pattern& pattern, std::size_t index, std::size_t offset = 0) // TODO: non-recursive version?
 	{
-		if (offset > index || pattern.size() <= index + offset + 1) throw AOC::InvalidInputData("isReflectiveLine");
+		if (offset > index || pattern.size() <= index + offset + 1) throw AOC::InvalidInputData("isReflectiveLine()");
 
 		const auto firstLine{index - offset};
 		const auto lastLine{index + offset + 1};
@@ -91,8 +89,8 @@ namespace { // Calculations
 		for (std::size_t i{0}; i < loopEnd; ++i) {
 			const auto index{static_cast<int>(i) + 1};
 
-			if (exclude && *exclude == index) continue;
-			if (isReflectiveLine(pattern, i)) return index;
+			if (exclude && *exclude == index) {continue;}
+			if (isReflectiveLine(pattern, i)) {return index;}
 		}
 
 		return 0;
@@ -190,7 +188,7 @@ namespace { // Calculations
 			}
 		}
 
-		throw AOC::InvalidInputData("summarizePatternWithSmudge");
+		throw AOC::InvalidInputData("summarizePatternWithSmudge()");
 	}
 }
 

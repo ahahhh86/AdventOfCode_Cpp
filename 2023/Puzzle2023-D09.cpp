@@ -51,7 +51,7 @@ namespace { // Calculations
 	bool areNumbersSame(const History& h)
 	{
 		for (int i : h) {
-			if (i != h[0]) return false;
+			if (i != h[0]) {return false;}
 		}
 
 		return true;

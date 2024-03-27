@@ -17,11 +17,14 @@ import Point2D;
 namespace { // Input
 	using GalaxyMap = std::vector<std::string>;
 	using Number = long long;
+	using NumVec = std::vector<Number>;
 	using Galaxy = AOC::Point2D<Number>;
 	using Galaxies = std::vector<Galaxy>;
 
 	constexpr char charGalaxy{'#'};
 	constexpr char charEmpty{'.'};
+
+
 
 	void validate(const GalaxyMap& map)
 	{
@@ -29,10 +32,10 @@ namespace { // Input
 			return line.size() != map[0].size();
 		})};
 
-		if (differentLineLength != 0) throw AOC::InvalidInputData("validate");
+		if (differentLineLength != 0) {throw AOC::InvalidInputData("validate()");}
 	}
 
-	using NumVec = std::vector<Number>;
+
 
 	auto findEmptyLine(const GalaxyMap& map)
 	{
@@ -56,6 +59,8 @@ namespace { // Input
 		return result;
 	}
 
+
+
 	auto findEmptyCol(const GalaxyMap& map)
 	{
 		NumVec result{};
@@ -78,18 +83,18 @@ namespace { // Input
 		return result;
 	}
 
+
+
 	auto findGalaxies(const GalaxyMap& map)
 	{
 		Galaxies result{};
 
 		for (std::size_t line{0}; line < map.size(); ++line) {
 			for (std::size_t pos{0}; pos < map[line].size(); ++pos) {
-				if (map[line][pos] == charEmpty) {
-
-				} else if (map[line][pos] == charGalaxy) {
+				if (map[line][pos] == charGalaxy) {
 					result.push_back({static_cast<Number>(line), static_cast<Number>(pos)});
-				} else {
-					throw AOC::InvalidInputData("findGalaxies");
+				} else if (map[line][pos] != charEmpty) {
+					throw AOC::InvalidInputData("findGalaxies()");
 				}
 			}
 		}
@@ -121,6 +126,8 @@ namespace { // Calculations
 		return result;
 	}
 
+
+
 	auto getExpanded(const GalaxyMap& map, Number factor)
 	{
 		const auto emptyLine{findEmptyLine(map)};
@@ -141,10 +148,14 @@ namespace { // Calculations
 		return result;
 	}
 
+
+
 	auto calculateDistance(Number start, Number end)
 	{
 		return std::llabs(end - start);
 	}
+
+
 
 	auto calculateDistance(Galaxy g1, Galaxy g2)
 	{
@@ -153,6 +164,8 @@ namespace { // Calculations
 
 		return lineDistance + colDistance;
 	}
+
+
 
 	auto accumulateDistance(const Galaxies& galaxies)
 	{

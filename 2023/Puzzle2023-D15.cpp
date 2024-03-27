@@ -21,12 +21,13 @@ namespace { // Input
 	{
 		std::vector<std::string> result{};
 
-		int end = str.find(delimiter);
+		auto end {str.find(delimiter)};
+
 		while (end != std::string::npos) {
 			const auto buffer{str.substr(0, end)};
 
 			result.push_back(buffer);
-			str.erase(str.begin(), str.begin() + end + 1);
+			str.erase(str.begin(), std::next(str.begin(), static_cast<long long>(end) + 1));
 
 			end = str.find(delimiter);
 		}
@@ -49,12 +50,16 @@ namespace { // Calculations
 		return currentValue;
 	}
 
+
+
 	auto hash(std::string_view str)
 	{
 		return std::accumulate(str.cbegin(), str.cend(), 0, [&](int sum, char c) {
 			return hashChar(c, sum);
 		});
 	}
+
+
 
 	auto accumulateHashes(const std::vector<std::string>& strs)
 	{

@@ -77,13 +77,6 @@ namespace { // Input
 
 
 
-	//bool operator<(const MapNode& n1, const MapNode& n2)
-	//{
-	//	return n1.name < n2.name;
-	//}
-
-
-
 	auto readEntry(std::ifstream& in)
 	{
 		constexpr std::size_t nodeNameLength{3};
@@ -165,7 +158,7 @@ namespace { // Calculations
 
 		for (std::size_t i{0}; ; ++i) {
 			setNextNodeName(nodeName, input.network, input.directions[i % dirSize]);
-			if (nodeName == "ZZZ") return i + 1;
+			if (nodeName == "ZZZ") {return i + 1;}
 		}
 	}
 
@@ -177,7 +170,7 @@ namespace { // Calculations
 		NodeNames result{};
 
 		std::ranges::for_each(network, [&](const MapNode& node) {
-			if (node.name.ends_with("A")) result.push_back(node.name);
+			if (node.name.ends_with("A")) {result.push_back(node.name);}
 		});
 
 		return result;
@@ -188,7 +181,7 @@ namespace { // Calculations
 	bool isAtEnd(const NodeNames& nodeNames)
 	{
 		for (std::string_view nName : nodeNames) {
-			if (!nName.ends_with("Z")) return false;
+			if (!nName.ends_with("Z")) {return false;}
 		}
 
 		return true;
@@ -207,7 +200,7 @@ namespace { // Calculations
 				setNextNodeName(nName, input.network, input.directions[index]);
 			});
 
-			if (isAtEnd(nodeNames)) return i + 1;
+			if (isAtEnd(nodeNames)) {return i + 1;}
 		}
 	}
 }

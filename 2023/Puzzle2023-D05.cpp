@@ -21,6 +21,8 @@ namespace { // Input
 	using Id = long long;
 	using IdVector = std::vector<Id>;
 
+
+
 	auto& operator>>(std::ifstream& in, IdVector& seeds)
 	{
 		while (!in.fail()) {
@@ -44,6 +46,8 @@ namespace { // Input
 		Id length{};
 	};
 	using AlmanacMap = std::vector<AlmanacMapLine>;
+
+
 
 	auto& operator>>(std::ifstream& in, AlmanacMap& map)
 	{
@@ -99,7 +103,6 @@ namespace { // Input
 		IdVector seeds{};
 		std::vector<AlmanacMap> maps{};
 	};
-
 
 
 

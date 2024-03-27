@@ -95,6 +95,7 @@ namespace AOC {
 		++m_part;
 		toClipboard(std::to_string(solution));
 	}
+
 	template <>
 	void IO::printSolution(const std::string& solution, const std::string& expected)
 	{

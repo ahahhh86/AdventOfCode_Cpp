@@ -2,10 +2,8 @@ module;
 
 #include <algorithm>
 #include <fstream>
-//#include <numeric>
 #include <set>
 #include <sstream>
-//#include <string>
 #include <vector>
 
 module Puzzle2023:D10;
@@ -53,7 +51,7 @@ namespace { // Input
 	{
 		char buffer{};
 		in >> buffer;
-		if (!in.eof()) tile = charToTile(buffer);
+		if (!in.eof()) {tile = charToTile(buffer);}
 		return in;
 	}
 
@@ -103,6 +101,8 @@ namespace { // Calculations
 	using Point = AOC::Point2D<int>;
 	using PointVec = std::vector<Point>;
 
+
+
 	auto getStartingPos(const Sketch& sketch)
 	{
 		PointVec startPos{};
@@ -115,19 +115,24 @@ namespace { // Calculations
 			}
 		}
 
-		if (startPos.size() != 1) throw AOC::InvalidInputData("getStartingPos");
+		if (startPos.size() != 1) throw AOC::InvalidInputData("getStartingPos()");
 		return startPos[0];
 	}
+
+
 
 	constexpr Point north{-1, 0};
 	constexpr Point east{0, 1};
 	constexpr Point south{1, 0};
 	constexpr Point west{0, -1};
 
+
+
 	bool isValidTile(Point nextPos, Point startPos, const Sketch& sketch)
 	{
 #pragma warning(disable : 4365) // C4365: signed/unsigned mismatch
 #pragma warning(disable : 4388) // C4388: >= signed/unsigned mismatch
+
 		if (nextPos.x < 0
 		 || nextPos.y < 0
 		 || nextPos.x >= sketch.size()
@@ -136,6 +141,7 @@ namespace { // Calculations
 		}
 
 		const Tile nextTile{sketch[nextPos.x][nextPos.y]};
+
 #pragma warning(default : 4388)
 #pragma warning(default : 4365)
 
@@ -188,6 +194,8 @@ namespace { // Calculations
 		return false; // should not be reached, but to prevent compiler warning
 	}
 
+
+
 	auto getFirstStep(const Sketch& sketch, Point startPos)
 	{
 		PointVec pos{};
@@ -212,20 +220,24 @@ namespace { // Calculations
 			pos.push_back(newPos);
 		}
 
-		if (pos.size() != 2) throw AOC::InvalidInputData("getFirstStep");
+		if (pos.size() != 2) throw AOC::InvalidInputData("getFirstStep()");
 		return pos;
 	}
 
-	Point chooseNewPos(Point p1, Point p2, Point oldPos)
+
+
+	auto chooseNewPos(Point p1, Point p2, Point oldPos)
 	{
 		if (p1 == oldPos) {
 			return p2;
 		} else if (p2 == oldPos) {
 			return p1;
 		} else {
-			throw AOC::InvalidInputData("chooseNewPos");
+			throw AOC::InvalidInputData("chooseNewPos()");
 		}
 	}
+
+
 
 	auto getNextPos(Point oldPos, Point pos, Tile tile)
 	{
@@ -240,6 +252,8 @@ namespace { // Calculations
 		}
 	}
 
+
+
 	void setNextPos(Point& oldPos, Point& pos, const Sketch& sketch)
 	{
 #pragma warning(suppress : 4365) // C4365: signed/unsigned mismatch
@@ -247,6 +261,8 @@ namespace { // Calculations
 		oldPos = pos;
 		pos = nextPos;
 	}
+
+
 
 	using Loop = std::set<Point>;
 	auto getLoop(const Sketch& sketch)
@@ -266,6 +282,8 @@ namespace { // Calculations
 
 		return loop;
 	}
+
+
 
 	auto countStepsToFarthestTile(const Loop& loop)
 	{
