@@ -5,7 +5,8 @@
 */
 
 // TODO: add Command line argument support
-// Puzzle description -> notepad++ find: (?<=.{80})\s replace: $0\n
+
+// to get Puzzle description with width 80: notepad++ find: (?<=.{80})\s replace: $0\n
 
 #include <iostream>
 #include <string>

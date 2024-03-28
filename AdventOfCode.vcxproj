@@ -196,8 +196,11 @@
     <ClCompile Include="2015\Puzzle2015-D20.ixx" />
     <ClCompile Include="2015\Puzzle2015-D21.cpp" />
     <ClCompile Include="2015\Puzzle2015-D21.ixx" />
+    <ClCompile Include="2015\Puzzle2015-D22.ixx" />
     <ClCompile Include="2015\Puzzle2015-D23.cpp" />
     <ClCompile Include="2015\Puzzle2015-D23.ixx" />
+    <ClCompile Include="2015\Puzzle2015-D24.ixx" />
+    <ClCompile Include="2015\Puzzle2015-D25.ixx" />
     <ClCompile Include="2015\Puzzle2015.cpp" />
     <ClCompile Include="2023\Puzzle2023-D03.cpp" />
     <ClCompile Include="2023\Puzzle2023-D03.ixx" />
@@ -224,6 +227,7 @@
     <ClCompile Include="2023\Puzzle2023-D10.ixx" />
     <ClCompile Include="2023\Puzzle2023-D11.cpp" />
     <ClCompile Include="2023\Puzzle2023-D11.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D12.ixx" />
     <ClCompile Include="2023\Puzzle2023-D13.cpp" />
     <ClCompile Include="2023\Puzzle2023-D13.ixx" />
     <ClCompile Include="2023\Puzzle2023-D14.cpp" />
@@ -234,6 +238,14 @@
     <ClCompile Include="2023\Puzzle2023-D16.ixx" />
     <ClCompile Include="2023\Puzzle2023-D17.cpp" />
     <ClCompile Include="2023\Puzzle2023-D17.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D18.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D19.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D20.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D21.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D22.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D23.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D24.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D25.ixx" />
     <ClCompile Include="2023\Puzzle2023.cpp" />
     <ClCompile Include="2023\Puzzle2023.ixx" />
     <ClCompile Include="BasicImports.ixx" />
