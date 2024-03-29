@@ -26,9 +26,9 @@ import :D18;
 import :D19;
 import :D20;
 import :D21;
+import :D22;
 import :D23;
 /*
-import :D22;
 import :D24;
 import :D25;
 */
@@ -62,9 +62,9 @@ namespace AOC::Y2015 {
 		case Day::d19: D19::solvePuzzle(); break;
 		case Day::d20: D20::solvePuzzle(); break;
 		case Day::d21: D21::solvePuzzle(); break;
+		case Day::d22: D22::solvePuzzle(); break;
 		case Day::d23: D23::solvePuzzle(); break;
 		/*
-		case Day::d22: D22::solvePuzzle(); break;
 		case Day::d24: D24::solvePuzzle(); break;
 		case Day::d25: D25::solvePuzzle(); break;
 		*/

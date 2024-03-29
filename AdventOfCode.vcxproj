@@ -196,6 +196,7 @@
     <ClCompile Include="2015\Puzzle2015-D20.ixx" />
     <ClCompile Include="2015\Puzzle2015-D21.cpp" />
     <ClCompile Include="2015\Puzzle2015-D21.ixx" />
+    <ClCompile Include="2015\Puzzle2015-D22.cpp" />
     <ClCompile Include="2015\Puzzle2015-D22.ixx" />
     <ClCompile Include="2015\Puzzle2015-D23.cpp" />
     <ClCompile Include="2015\Puzzle2015-D23.ixx" />

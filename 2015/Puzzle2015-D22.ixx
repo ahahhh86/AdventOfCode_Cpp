@@ -25,7 +25,6 @@ Poison, and Recharge.
 
 	Magic Missile costs 53 mana. It instantly does 4 damage.
 	Drain costs 73 mana. It instantly does 2 damage and heals you for 2 hit points.
-
 	Shield costs 113 mana. It starts an effect that lasts for 6 turns. While it is
 		active, your armor is increased by 7.
 	Poison costs 173 mana. It starts an effect that lasts for 6 turns. At the start
@@ -141,6 +140,6 @@ fight? (Do not include mana recharge effects as "spending" negative mana.)
 
 export module Puzzle2015:D22;
 
-//namespace AOC::Y2015::D22 { // TODO
-//	export void solvePuzzle();
-//}
+namespace AOC::Y2015::D22 {
+	export void solvePuzzle();
+}

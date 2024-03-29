@@ -87,9 +87,9 @@ namespace { // Calculations
 		std::ranges::for_each(calib.replacements, [&](const auto& data) {
 			const std::size_t findLength{data.find.length()};
 
-			for (auto i{calib.medicineMolecule.find(data.find, 0)}; i != std::string::npos; i = calib.medicineMolecule.find(data.find, i + findLength)) {
+			for (auto pos{calib.medicineMolecule.find(data.find, 0)}; pos != std::string::npos; pos = calib.medicineMolecule.find(data.find, pos + findLength)) {
 				std::string buffer{calib.medicineMolecule};
-				buffer.replace(i, findLength, data.replace);
+				buffer.replace(pos, findLength, data.replace);
 				distinctMolecules.emplace(buffer);
 			}
 		});
@@ -100,25 +100,12 @@ namespace { // Calculations
 
 
 	//TODO: Part 2
-	//int replaceAll(std::string& str, std::string_view from, std::string_view to)
-	//{
-	//	auto start{str.find(from)};
-	//	int steps{0};
-
-	//	while (start != std::string::npos) {
-	//		str.replace(start, from.length(), to);
-	//		start = str.find(from, start + to.length() - 1);
-	//		++steps;
-	//	}
-
-	//	return steps;
-	//}
-
-
+	/*
 	auto deconstuctMedicineMolecule(const CalibrationData& calib)
 	{
 
 	}
+	*/
 }
 
 
