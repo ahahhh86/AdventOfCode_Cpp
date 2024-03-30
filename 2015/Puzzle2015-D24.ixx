@@ -59,6 +59,6 @@ What is the quantum entanglement of the first group of packages in the ideal con
 
 export module Puzzle2015:D24;
 
-//namespace AOC::Y2015::D24 { // TODO
-//	export void solvePuzzle();
-//}
+namespace AOC::Y2015::D24 {
+	export void solvePuzzle();
+}
