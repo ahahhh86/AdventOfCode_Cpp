@@ -291,6 +291,96 @@ namespace { // Calculations
 	}
 
 
+
+	// TODO: Part2
+	//enum class EnclosedTile
+	//{
+	//	Unknown,
+	//	Outside,
+	//	Loop,
+	//	Enclosed,
+	//};
+
+	//using EnclosedLine = std::vector<EnclosedTile>;
+	//using EnclosedSketch = std::vector<EnclosedLine>;
+
+
+
+	//// TODO: Refactoring
+	//auto getEnclosedSketch(const Sketch& sketch, const Loop& loop)
+	//{
+	//	EnclosedSketch result{};
+	//	EnclosedLine line(sketch.size());
+	//	std::fill(line.begin(), line.end(), EnclosedTile::Unknown);
+	//	for (int i{0}; i < sketch.size(); ++i) {
+	//		result.push_back(line);
+	//	};
+	//	const auto lastLine{static_cast<int>(sketch.size()) - 1};
+	//	const auto lastRow{static_cast<int>(sketch[0].size()) - 1};
+
+
+
+	//	// First and last line can not be enclosed
+	//	for (auto i{0}; i < result[0].size(); ++i) {
+	//		if (loop.find({0, i}) != loop.cend()) {
+	//			result[0][i] = EnclosedTile::Loop;
+	//		} else {
+	//			result[0][i] = EnclosedTile::Outside;
+	//		}
+
+	//		if (loop.find({lastLine, i}) != loop.cend()) {
+	//			result[lastLine][i] = EnclosedTile::Loop;
+	//		} else {
+	//			result[lastLine][i] = EnclosedTile::Outside;
+	//		}
+	//	}
+
+	//	// First and last column can not be enclosed
+	//	// First and last line already covered
+	//	for (auto i{1}; i < result.size() - 1; ++i) {
+	//		if (loop.find({i, 0}) != loop.cend()) {
+	//			result[i][0] = EnclosedTile::Loop;
+	//		} else {
+	//			result[i][0] = EnclosedTile::Outside;
+	//		}
+
+	//		if (loop.find({i, lastRow}) != loop.cend()) {
+	//			result[i][lastRow] = EnclosedTile::Loop;
+	//		} else {
+	//			result[i][lastRow] = EnclosedTile::Outside;
+	//		}
+	//	}
+
+	//	for (auto i{1}; i < result.size() - 1; ++i) {
+	//		for (auto j{1}; j < result[0].size() - 1; ++j) {
+	//			if (loop.find({i, j}) != loop.cend()) {
+	//				result[i][j] = EnclosedTile::Loop;
+	//			} else {
+	//				// TODO:
+	//				// if adjacent Outside -> self Outside
+	//				// if adjacent Enclosed -> self Enclosed
+	//				// Problem: open loop
+	//			}
+	//		}
+	//	}
+
+	//	return result;
+	//}
+
+
+
+	//auto countEnclosed(const EnclosedSketch& sketch)
+	//{
+	//	std::size_t result{0};
+
+	//	std::ranges::for_each(sketch, [&](const EnclosedLine& line) {
+	//		result += std::ranges::count_if(line, [](EnclosedTile i){
+	//			return i == EnclosedTile::Enclosed;
+	//		});
+	//	});
+
+	//	return result;
+	//}
 }
 
 
@@ -340,6 +430,6 @@ namespace AOC::Y2023::D10 { // Solution
 		validate(input);
 		const auto loop{getLoop(input)};
 		io.printSolution(countStepsToFarthestTile(loop), 6815);
-		// TODO: Part2
+		//io.printSolution(countEnclosed(getEnclosedSketch(sketch, loop)), 0) // TODO:
 	}
 }

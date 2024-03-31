@@ -68,6 +68,6 @@ plan, how many cubic meters of lava could it hold?
 
 export module Puzzle2023:D18;
 
-//namespace AOC::Y2023::D18 {// TODO
-//	export void solvePuzzle();
-//}
+namespace AOC::Y2023::D18 {
+	export void solvePuzzle();
+}

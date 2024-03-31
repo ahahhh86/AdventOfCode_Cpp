@@ -100,11 +100,10 @@ So, in this example, you end up entirely on nodes that end in Z after 6 steps.
 Simultaneously start on every node that ends with A. How many steps does it take
 before you're only on nodes that end with Z?
 
-TODO: solve part 2, 2.147.483.647 too low, takes too long
 */
 
 export module Puzzle2023:D08;
 
-namespace AOC::Y2023::D08 {
+namespace AOC::Y2023::D08 { // TODO: solve part 2, 2.147.483.647 too low, takes too long
 	export void solvePuzzle();
 }
