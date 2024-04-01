@@ -11,7 +11,7 @@ module;
 module Puzzle2023:D18;
 
 import BasicImports;
-import Grid2D;		// TODO: without Grid, use only vector with outline, is it possible?
+import Grid2D;		// TODO: make own Grid class, inherited from Grid2D
 
 
 
@@ -173,25 +173,102 @@ namespace { // Calculations
 
 
 
-	void makeTilePlain(Grid& grid, const Point& pos)
-	{
-		if (!pos.isInBounds({0, 0}, {gridSize - 1, gridSize - 1})) { return; }
-		if (grid[pos] != Tile::Unknown) { return; }
+	// do not use recursive function: cases call stack to overflow
+	//void makeTilePlain(Grid& grid, const Point& pos)
+	//{
+	//	if (!pos.isInBounds({0, 0}, {gridSize - 1, gridSize - 1})) { return; }
+	//	if (grid[pos] != Tile::Unknown) { return; }
 
-		grid[pos] = Tile::Plain;
-		makeTilePlain(grid, pos + directionToPoint(Direction::Up));
-		makeTilePlain(grid, pos + directionToPoint(Direction::Right));
-		makeTilePlain(grid, pos + directionToPoint(Direction::Down));
-		makeTilePlain(grid, pos + directionToPoint(Direction::Left));
+	//	grid[pos] = Tile::Plain;
+	//	makeTilePlain(grid, pos + directionToPoint(Direction::Up));
+	//	makeTilePlain(grid, pos + directionToPoint(Direction::Right));
+	//	makeTilePlain(grid, pos + directionToPoint(Direction::Down));
+	//	makeTilePlain(grid, pos + directionToPoint(Direction::Left));
+	//}
+
+
+
+	void makeBorderTilePlain(Grid& grid, const Point& pos)
+	{
+		Tile& tile{grid[pos]};
+		if (tile == Tile::Unknown) { tile = Tile::Plain; }
 	}
 
 
 
-	void makeFramePlain(Grid& grid)
+	void makeBorderPlain(Grid& grid)
 	{
-		/*grid.forSub({0, 0}, {0, gridSize - 1}, [&](Tile& i) {
-			if (i == Tile::Unknown) { i = Tile::Plain; }
-		});*/
+		constexpr auto maxGrid{gridSize - 1};
+		for (int i {0}; i < gridSize; ++i) {
+			makeBorderTilePlain(grid, {0, i});
+			makeBorderTilePlain(grid, {maxGrid, i});
+		};
+
+		for (int i{1}; i < maxGrid; ++i) {
+			makeBorderTilePlain(grid, {i, 0});
+			makeBorderTilePlain(grid, {i, maxGrid});
+		};
+	}
+
+
+
+	bool isAdjacentPlain(Grid& grid, const Point& pos)
+	{
+		// TODO: maybe Check bounds
+		return grid[pos + directionToPoint(Direction::Up)] == Tile::Plain
+			|| grid[pos + directionToPoint(Direction::Right)] == Tile::Plain
+			|| grid[pos + directionToPoint(Direction::Down)] == Tile::Plain
+			|| grid[pos + directionToPoint(Direction::Left)] == Tile::Plain;
+
+	}
+
+
+
+	auto makeInnerPlain(Grid& grid)
+	{
+		constexpr auto maxGrid{gridSize - 1};
+		int count{0};
+
+		for (int i{1}; i < maxGrid; ++i) {
+			for (int j{1}; j < maxGrid; ++j) {
+				const Point pos{i, j};
+				if (grid[pos] == Tile::Unknown && isAdjacentPlain(grid, pos)) {
+					grid[pos] = Tile::Plain;
+					++count;
+				}
+			}
+		}
+
+		return count;
+	}
+
+
+
+	void makePlain(Grid& grid)
+	{
+		makeBorderPlain(grid);
+
+		while (makeInnerPlain(grid)) {
+			// do nothing, just loop condition
+		}
+	}
+
+
+
+	auto countHoles(Grid& grid)
+	{
+		return static_cast<int>(std::count_if(grid.cbegin(), grid.cend(), [&](Tile i){
+			return i == Tile::Hole;
+		}));
+	}
+
+
+
+	auto countHoles2(Grid& grid) // TODO: maybe make all Unknown Hole before counting
+	{
+		return static_cast<int>(std::count_if(grid.cbegin(), grid.cend(), [&](Tile i) {
+			return i == Tile::Hole || i == Tile::Unknown;
+		}));
 	}
 }
 
@@ -201,9 +278,30 @@ namespace { // Testing
 	void testPuzzle(AOC::IO& io)
 	{
 		if (AOC::debugMode) {
+			const InstructionVector instructions{
+				readInstruction(std::stringstream{"R 6 (#70c710)"}),
+				readInstruction(std::stringstream{"D 5 (#0dc571)"}),
+				readInstruction(std::stringstream{"L 2 (#5713f0)"}),
+				readInstruction(std::stringstream{"D 2 (#d2c081)"}),
+				readInstruction(std::stringstream{"R 2 (#59c680)"}),
+				readInstruction(std::stringstream{"D 2 (#411b91)"}),
+				readInstruction(std::stringstream{"L 5 (#8ceee2)"}),
+				readInstruction(std::stringstream{"U 2 (#caa173)"}),
+				readInstruction(std::stringstream{"L 1 (#1b58a2)"}),
+				readInstruction(std::stringstream{"U 2 (#caa171)"}),
+				readInstruction(std::stringstream{"R 2 (#7807d2)"}),
+				readInstruction(std::stringstream{"U 3 (#a77fa3)"}),
+				readInstruction(std::stringstream{"L 2 (#015232)"}),
+				readInstruction(std::stringstream{"U 2 (#7a21e3)"}),
+			};
+
 			io.startTests();
 
-			//io.printTest(0, 0);
+			auto grid{digFrame(instructions)};
+			makePlain(grid);
+
+			io.printTest(countHoles(grid), 38);
+			io.printTest(countHoles2(grid), 62);
 
 			io.endTests();
 		}
@@ -220,12 +318,9 @@ namespace AOC::Y2023::D18 { // Solution
 
 		const auto instructions{io.readInputFile<Instruction>()};
 		auto grid{digFrame(instructions)};
+		makePlain(grid);
 
-		int sum{0};
-		for (auto i{grid.cbegin()}; i < grid.cend(); ++i) {
-			sum += static_cast<int>(*i);
-		}
-
-		io.printSolution(sum, 4696);
+		io.printSolution(countHoles2(grid), 4696);
+		// TODO: Part2
 	}
 }
