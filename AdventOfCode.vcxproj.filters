@@ -345,6 +345,9 @@
     <ClCompile Include="2023\Puzzle2023-D18.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="2023\Puzzle2023-D19.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2015\md5.h">

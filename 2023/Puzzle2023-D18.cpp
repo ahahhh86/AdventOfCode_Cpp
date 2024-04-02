@@ -270,6 +270,38 @@ namespace { // Calculations
 			return i == Tile::Hole || i == Tile::Unknown;
 		}));
 	}
+
+
+
+	// TODO: Part2
+	// numbers are too big, need another way to calculate the numbers
+	auto intToDirection(int value)
+	{
+		switch (value) {
+			case 0: return Direction::Right;
+			case 1: return Direction::Down;
+			case 2: return Direction::Left;
+			case 3: return Direction::Up;
+		default:
+			throw AOC::InvalidInputData("intToDirection()");
+		}
+	}
+
+
+
+	auto reinterpretInstructions(const InstructionVector& instructions)
+	{
+		InstructionVector result{};
+
+		std::ranges::for_each(instructions, [&](const Instruction& i){
+			Instruction buffer{};
+			buffer.direction = intToDirection(i.color % 16);
+			buffer.length = i.color / 16;
+			result.push_back(buffer);
+		});
+
+		return result;
+	}
 }
 
 
@@ -303,6 +335,23 @@ namespace { // Testing
 			io.printTest(countHoles(grid), 38);
 			io.printTest(countHoles2(grid), 62);
 
+			auto newInstructions{reinterpretInstructions(instructions)};
+
+			io.printTest(newInstructions[0].length, 461937);
+			io.printTest(newInstructions[0].direction == Direction::Right, true);
+
+			io.printTest(newInstructions[1].length, 56407);
+			io.printTest(newInstructions[1].direction == Direction::Down, true);
+
+			io.printTest(newInstructions[2].length, 356671);
+			io.printTest(newInstructions[2].direction == Direction::Right, true);
+
+			io.printTest(newInstructions[6].length, 577262);
+			io.printTest(newInstructions[6].direction == Direction::Left, true);
+
+			io.printTest(newInstructions[7].length, 829975);
+			io.printTest(newInstructions[7].direction == Direction::Up, true);
+
 			io.endTests();
 		}
 	}
@@ -320,7 +369,7 @@ namespace AOC::Y2023::D18 { // Solution
 		auto grid{digFrame(instructions)};
 		makePlain(grid);
 
-		io.printSolution(countHoles2(grid), 4696);
+		io.printSolution(countHoles2(grid), 76387);
 		// TODO: Part2
 	}
 }
