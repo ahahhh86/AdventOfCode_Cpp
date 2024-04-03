@@ -157,6 +157,6 @@ total number of low pulses sent by the total number of high pulses sent?
 
 export module Puzzle2023:D20;
 
-//namespace AOC::Y2023::D20 {// TODO
-//	export void solvePuzzle();
-//}
+namespace AOC::Y2023::D20 {
+	export void solvePuzzle();
+}
