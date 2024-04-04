@@ -23,10 +23,10 @@ import :D16;
 import :D18;
 import :D19;
 import :D20;
+import :D21;
 /*
 import :D12;
 import :D17;
-import :D21;
 import :D22;
 import :D23;
 import :D24;
@@ -59,10 +59,10 @@ namespace AOC::Y2023 {
 		case Day::d18: D18::solvePuzzle(); break;
 		case Day::d19: D19::solvePuzzle(); break;
 		case Day::d20: D20::solvePuzzle(); break;
+		case Day::d21: D21::solvePuzzle(); break;
 		/*
 		case Day::d12: D12::solvePuzzle(); break;
 		case Day::d17: D17::solvePuzzle(); break;
-		case Day::d21: D21::solvePuzzle(); break;
 		case Day::d22: D22::solvePuzzle(); break;
 		case Day::d23: D23::solvePuzzle(); break;
 		case Day::d24: D24::solvePuzzle(); break;

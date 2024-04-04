@@ -4,7 +4,6 @@ module;
 #include <fstream>
 #include <iostream>
 #include <map>
-//#include <memory>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -38,6 +37,7 @@ namespace { // Input
 		Brodcast,
 		FlipFlop,
 		Conjunction,
+		TurnOn,
 	};
 
 
@@ -62,6 +62,7 @@ namespace { // Input
 		Destinations getDestinations() const { return m_destinations; }
 		std::string getName() const { return m_name; }
 		/*virtual*/ Pulse sendPulse(Pulse pulse, const std::string& sender);
+		const bool& isOn() const { return m_On; }
 
 		friend void setInputModules(ModuleVector& modules);
 	private:
@@ -118,6 +119,9 @@ namespace { // Input
 			}
 		case ModulType::Conjunction:
 			return getConjunctionOutput(pulse, sender);
+		case ModulType::TurnOn:
+			if (pulse == Pulse::Low) { m_On = true; }
+			return Pulse::None;
 		default:
 			throw AOC::aocError{"Module::sendPulse()"};
 		}
@@ -248,6 +252,19 @@ namespace { // Input
 
 
 namespace { // Calculations
+	struct PulseCount
+	{
+		int high{0};
+		int low{0};
+
+		long long multiply() const
+		{
+			return static_cast<long long>(high) * static_cast<long long>(low);
+		}
+	};
+
+
+
 	struct Signal
 	{
 		std::string sender{""};
@@ -255,17 +272,78 @@ namespace { // Calculations
 		std::string destination{""};
 	};
 	using SignalVector = std::vector<Signal>;
+	const SignalVector buttonPress{{"button", Pulse::Low, "broadcaster"}};
 
-	auto getNextPulses(const SignalVector& signals, ModuleVector& modules)
+
+
+	class Machine
+	{
+	public:
+		explicit Machine(const ModuleVector& modules): m_modules{modules} {/*do nothing*/}
+
+		auto pressButton(int count);
+		auto turnOn();
+	private:
+		void calculateNextPulses();
+		void incPulseCount();
+		bool findRx() const;
+
+		ModuleVector m_modules;
+		SignalVector m_signals{buttonPress};
+		PulseCount m_pulseCount{0, 0};
+
+		friend void testPuzzle(AOC::IO&);
+	};
+
+
+
+	auto Machine::pressButton(int count)
+	{
+		for (int i{0}; i < count; ++i) {
+			do {
+				// count before calculating, because we include the initial pulse
+				// also the last pulse has size 0, so there is nothing to count
+				incPulseCount();
+				calculateNextPulses();
+			} while (m_signals.size() > 0);
+
+			m_signals = buttonPress;
+		}
+
+		return m_pulseCount.multiply();
+	}
+
+
+
+	auto Machine::turnOn()
+	{
+		m_modules.push_back(Module{"rx", {}, ModulType::TurnOn});
+		const bool& foundRX{std::prev(m_modules.cend())->isOn()};
+
+		for (int i{1}; i < 100000000; ++i) { // prevent infinite loop
+			do {
+				calculateNextPulses();
+			} while (m_signals.size() > 0);
+
+			if (foundRX) { return i; }
+			m_signals = buttonPress;
+		}
+
+		throw AOC::aocError{"Machine::turnOn()"};
+	}
+
+
+
+	void Machine::calculateNextPulses()
 	{
 		SignalVector result{};
 
-		std::ranges::for_each(signals, [&](const Signal& signal) {
-			auto module{std::ranges::find_if(modules, [&](const Module& m){
+		std::ranges::for_each(m_signals, [&](const Signal& signal) {
+			auto module{std::ranges::find_if(m_modules, [&](const Module& m) {
 				return m.getName() == signal.destination;
 			})};
 
-			if (module == modules.end()) { return;/*throw AOC::InvalidInputData{"getNextPulses(): " + signal.destination};*/ }
+			if (module == m_modules.end()) { return; }
 
 			const Pulse newPulse{module->sendPulse(signal.pulse, signal.sender)};
 			if (newPulse == Pulse::None) { return; }
@@ -275,27 +353,74 @@ namespace { // Calculations
 			});
 		});
 
-		return result;
+		m_signals = result;
 	}
 
 
-	struct CountPulses
+
+	void Machine::incPulseCount()
 	{
-		long long low{0};
-		long long high{0};
-	};
-
-	const SignalVector buttonPress{{"button", Pulse::Low, "broadcaster"}};
-	auto getPulses(ModuleVector& modules)
-	{
-		SignalVector signals{buttonPress};
-
-		CountPulses pulseCount{1, 0};
-
-		do {
-			signals = getNextPulses(signals, modules);
-		} while (signals.size() > 0);
+		std::ranges::for_each(m_signals, [&](const Signal& s) {
+			switch (s.pulse) {
+			case Pulse::High:
+				++m_pulseCount.high;
+				break;
+			case Pulse::Low:
+				++m_pulseCount.low;
+				break;
+			default:
+				break;
+			}
+		});
 	}
+
+
+
+	//bool Machine::findRx() const
+	//{
+	//	const auto result{std::ranges::find_if(m_signals, [&](const Signal& s) {
+	//		return s.destination == "rx";
+	//	})};
+
+	//	if (result == m_signals.cend()) { return false; }
+	//	return result->pulse == Pulse::Low;
+	//}
+
+
+
+
+
+
+	//auto getNextPulses(const SignalVector& signals, ModuleVector& modules)
+	//{
+	//	SignalVector result{};
+
+	//	std::ranges::for_each(signals, [&](const Signal& signal) {
+	//		auto module{std::ranges::find_if(modules, [&](const Module& m){
+	//			return m.getName() == signal.destination;
+	//		})};
+
+	//		if (module == modules.end()) { return;/*throw AOC::InvalidInputData{"getNextPulses(): " + signal.destination};*/ }
+
+	//		const Pulse newPulse{module->sendPulse(signal.pulse, signal.sender)};
+	//		if (newPulse == Pulse::None) { return; }
+
+	//		std::ranges::for_each(module->getDestinations(), [&](const std::string& dest) {
+	//			result.push_back(Signal{module->getName(), newPulse, dest});
+	//		});
+	//	});
+
+	//	return result;
+	//}
+
+	//auto getPulses(ModuleVector& modules)
+	//{
+	//	SignalVector signals{buttonPress};
+
+	//	do {
+	//		signals = getNextPulses(signals, modules);
+	//	} while (signals.size() > 0);
+	//}
 }
 
 
@@ -321,169 +446,208 @@ namespace { // Testing
 				readModule(std::stringstream{"%a -> inv, con"}),
 				readModule(std::stringstream{"&inv -> b"}),
 				readModule(std::stringstream{"%b -> con"}),
-				readModule(std::stringstream{"&con -> output"}),
+				readModule(std::stringstream{"&con -> rx"}),
 			};
 			setInputModules(test2);
 
-			SignalVector signals{buttonPress};
-			signals = getNextPulses(signals, test1);
-			io.printTest(+signals[0].pulse, +Pulse::Low);
-			io.printTest(signals[0].destination, "a"s);
-			io.printTest(+signals[1].pulse, +Pulse::Low);
-			io.printTest(signals[1].destination, "b"s);
-			io.printTest(+signals[2].pulse, +Pulse::Low);
-			io.printTest(signals[2].destination, "c"s);
-			io.printTest(signals.size(), 3ULL);
+			Machine machine1{test1};
+			machine1.incPulseCount();
+			machine1.calculateNextPulses();
+			io.printTest(+machine1.m_signals[0].pulse, +Pulse::Low);
+			io.printTest(machine1.m_signals[0].destination, "a"s);
+			io.printTest(+machine1.m_signals[1].pulse, +Pulse::Low);
+			io.printTest(machine1.m_signals[1].destination, "b"s);
+			io.printTest(+machine1.m_signals[2].pulse, +Pulse::Low);
+			io.printTest(machine1.m_signals[2].destination, "c"s);
+			io.printTest(machine1.m_signals.size(), 3ULL);
 			std::cout << '\n';
 
-			signals = getNextPulses(signals, test1);
-			io.printTest(+signals[0].pulse, +Pulse::High);
-			io.printTest(signals[0].destination, "b"s);
-			io.printTest(+signals[1].pulse, +Pulse::High);
-			io.printTest(signals[1].destination, "c"s);
-			io.printTest(+signals[2].pulse, +Pulse::High);
-			io.printTest(signals[2].destination, "inv"s);
-			io.printTest(signals.size(), 3ULL);
+			machine1.incPulseCount();
+			machine1.calculateNextPulses();
+			io.printTest(+machine1.m_signals[0].pulse, +Pulse::High);
+			io.printTest(machine1.m_signals[0].destination, "b"s);
+			io.printTest(+machine1.m_signals[1].pulse, +Pulse::High);
+			io.printTest(machine1.m_signals[1].destination, "c"s);
+			io.printTest(+machine1.m_signals[2].pulse, +Pulse::High);
+			io.printTest(machine1.m_signals[2].destination, "inv"s);
+			io.printTest(machine1.m_signals.size(), 3ULL);
 			std::cout << '\n';
 
-			signals = getNextPulses(signals, test1);
-			io.printTest(+signals[0].pulse, +Pulse::Low);
-			io.printTest(signals[0].destination, "a"s);
-			io.printTest(signals.size(), 1ULL);
+			machine1.incPulseCount();
+			machine1.calculateNextPulses();
+			io.printTest(+machine1.m_signals[0].pulse, +Pulse::Low);
+			io.printTest(machine1.m_signals[0].destination, "a"s);
+			io.printTest(machine1.m_signals.size(), 1ULL);
 			std::cout << '\n';
 
-			signals = getNextPulses(signals, test1);
-			io.printTest(+signals[0].pulse, +Pulse::Low);
-			io.printTest(signals[0].destination, "b"s);
-			io.printTest(signals.size(), 1ULL);
+			machine1.incPulseCount();
+			machine1.calculateNextPulses();
+			io.printTest(+machine1.m_signals[0].pulse, +Pulse::Low);
+			io.printTest(machine1.m_signals[0].destination, "b"s);
+			io.printTest(machine1.m_signals.size(), 1ULL);
 			std::cout << '\n';
 
-			signals = getNextPulses(signals, test1);
-			io.printTest(+signals[0].pulse, +Pulse::Low);
-			io.printTest(signals[0].destination, "c"s);
-			io.printTest(signals.size(), 1ULL);
+			machine1.incPulseCount();
+			machine1.calculateNextPulses();
+			io.printTest(+machine1.m_signals[0].pulse, +Pulse::Low);
+			io.printTest(machine1.m_signals[0].destination, "c"s);
+			io.printTest(machine1.m_signals.size(), 1ULL);
 			std::cout << '\n';
 
-			signals = getNextPulses(signals, test1);
-			io.printTest(+signals[0].pulse, +Pulse::Low);
-			io.printTest(signals[0].destination, "inv"s);
-			io.printTest(signals.size(), 1ULL);
+			machine1.incPulseCount();
+			machine1.calculateNextPulses();
+			io.printTest(+machine1.m_signals[0].pulse, +Pulse::Low);
+			io.printTest(machine1.m_signals[0].destination, "inv"s);
+			io.printTest(machine1.m_signals.size(), 1ULL);
 			std::cout << '\n';
 
-			signals = getNextPulses(signals, test1);
-			io.printTest(+signals[0].pulse, +Pulse::High);
-			io.printTest(signals[0].destination, "a"s);
-			io.printTest(signals.size(), 1ULL);
+			machine1.incPulseCount();
+			machine1.calculateNextPulses();
+			io.printTest(+machine1.m_signals[0].pulse, +Pulse::High);
+			io.printTest(machine1.m_signals[0].destination, "a"s);
+			io.printTest(machine1.m_signals.size(), 1ULL);
+			std::cout << '\n';
+
+			machine1.incPulseCount();
+			io.printTest(+machine1.m_pulseCount.low, 8);
+			io.printTest(+machine1.m_pulseCount.high, 4);
+			io.printTest(+machine1.m_pulseCount.multiply(), 32LL);
 			std::cout << "\n\n\n";
 
 
 
-			signals = getNextPulses(buttonPress, test2);
-			io.printTest(+signals[0].pulse, +Pulse::Low);
-			io.printTest(signals[0].destination, "a"s);
-			io.printTest(signals.size(), 1ULL);
-			std::cout << '\n';
-
-			signals = getNextPulses(signals, test2);
-			io.printTest(+signals[0].pulse, +Pulse::High);
-			io.printTest(signals[0].destination, "inv"s);
-			io.printTest(+signals[1].pulse, +Pulse::High);
-			io.printTest(signals[1].destination, "con"s);
-			io.printTest(signals.size(), 2ULL);
-			std::cout << '\n';
-
-			signals = getNextPulses(signals, test2);
-			io.printTest(+signals[0].pulse, +Pulse::Low);
-			io.printTest(signals[0].destination, "b"s);
-			io.printTest(+signals[1].pulse, +Pulse::High);
-			io.printTest(signals[1].destination, "output"s);
-			io.printTest(signals.size(), 2ULL);
-			std::cout << '\n';
-
-
-			signals = getNextPulses(signals, test2);
-			io.printTest(+signals[0].pulse, +Pulse::High);
-			io.printTest(signals[0].destination, "con"s);
-			io.printTest(signals.size(), 1ULL);
-			std::cout << '\n';
-
-			signals = getNextPulses(signals, test2);
-			io.printTest(+signals[0].pulse, +Pulse::Low);
-			io.printTest(signals[0].destination, "output"s);
-			io.printTest(signals.size(), 1ULL);
-			std::cout << '\n';
-
-			signals = getNextPulses(signals, test2);
-			io.printTest(signals.size(), 0ULL);
-			std::cout << "\n\n\n";
+			Machine machine2{test2};
+			io.printTest(+machine2.pressButton(1000), 11687500LL);
 
 
 
-			signals = getNextPulses(buttonPress, test2);
-			io.printTest(+signals[0].pulse, +Pulse::Low);
-			io.printTest(signals[0].destination, "a"s);
-			io.printTest(signals.size(), 1ULL);
-			std::cout << '\n';
-
-			signals = getNextPulses(signals, test2);
-			io.printTest(+signals[0].pulse, +Pulse::Low);
-			io.printTest(signals[0].destination, "inv"s);
-			io.printTest(+signals[1].pulse, +Pulse::Low);
-			io.printTest(signals[1].destination, "con"s);
-			io.printTest(signals.size(), 2ULL);
-			std::cout << '\n';
-
-			signals = getNextPulses(signals, test2);
-			io.printTest(+signals[0].pulse, +Pulse::High);
-			io.printTest(signals[0].destination, "b"s);
-			io.printTest(+signals[1].pulse, +Pulse::High);
-			io.printTest(signals[1].destination, "output"s);
-			io.printTest(signals.size(), 2ULL);
-			std::cout << '\n';
-
-			signals = getNextPulses(signals, test2);
-			io.printTest(signals.size(), 0ULL);
-			std::cout << "\n\n\n";
+			Machine machine3{test2};
+			io.printTest(+machine3.turnOn(), 1);
 
 
+			//machine2.incPulseCount();
+			//machine2.calculateNextPulses();
+			//io.printTest(+machine2.m_signals[0].pulse, +Pulse::Low);
+			//io.printTest(machine2.m_signals[0].destination, "a"s);
+			//io.printTest(machine2.m_signals.size(), 1ULL);
+			//std::cout << '\n';
 
-			signals = getNextPulses(buttonPress, test2);
-			io.printTest(+signals[0].pulse, +Pulse::Low);
-			io.printTest(signals[0].destination, "a"s);
-			io.printTest(signals.size(), 1ULL);
-			std::cout << '\n';
+			//machine2.incPulseCount();
+			//machine2.calculateNextPulses();
+			//io.printTest(+machine2.m_signals[0].pulse, +Pulse::High);
+			//io.printTest(machine2.m_signals[0].destination, "inv"s);
+			//io.printTest(+machine2.m_signals[1].pulse, +Pulse::High);
+			//io.printTest(machine2.m_signals[1].destination, "con"s);
+			//io.printTest(machine2.m_signals.size(), 2ULL);
+			//std::cout << '\n';
 
-			signals = getNextPulses(signals, test2);
-			io.printTest(+signals[0].pulse, +Pulse::High);
-			io.printTest(signals[0].destination, "inv"s);
-			io.printTest(+signals[1].pulse, +Pulse::High);
-			io.printTest(signals[1].destination, "con"s);
-			io.printTest(signals.size(), 2ULL);
-			std::cout << '\n';
+			//machine2.incPulseCount();
+			//machine2.calculateNextPulses();
+			//io.printTest(+machine2.m_signals[0].pulse, +Pulse::Low);
+			//io.printTest(machine2.m_signals[0].destination, "b"s);
+			//io.printTest(+machine2.m_signals[1].pulse, +Pulse::High);
+			//io.printTest(machine2.m_signals[1].destination, "rx"s);
+			//io.printTest(machine2.m_signals.size(), 2ULL);
+			//std::cout << '\n';
 
-			signals = getNextPulses(signals, test2);
-			io.printTest(+signals[0].pulse, +Pulse::Low);
-			io.printTest(signals[0].destination, "b"s);
-			io.printTest(+signals[1].pulse, +Pulse::Low);
-			io.printTest(signals[1].destination, "output"s);
-			io.printTest(signals.size(), 2ULL);
-			std::cout << '\n';
+			//machine2.incPulseCount();
+			//machine2.calculateNextPulses();
+			//io.printTest(+machine2.m_signals[0].pulse, +Pulse::High);
+			//io.printTest(machine2.m_signals[0].destination, "con"s);
+			//io.printTest(machine2.m_signals.size(), 1ULL);
+			//std::cout << '\n';
 
-			signals = getNextPulses(signals, test2);
-			io.printTest(+signals[0].pulse, +Pulse::Low);
-			io.printTest(signals[0].destination, "con"s);
-			io.printTest(signals.size(), 1ULL);
-			std::cout << '\n';
+			//machine2.incPulseCount();
+			//machine2.calculateNextPulses();
+			//io.printTest(+machine2.m_signals[0].pulse, +Pulse::Low);
+			//io.printTest(machine2.m_signals[0].destination, "rx"s);
+			//io.printTest(machine2.m_signals.size(), 1ULL);
+			//std::cout << '\n';
 
-			signals = getNextPulses(signals, test2);
-			io.printTest(+signals[0].pulse, +Pulse::High);
-			io.printTest(signals[0].destination, "output"s);
-			io.printTest(signals.size(), 1ULL);
-			std::cout << '\n';
+			//machine2.incPulseCount();
+			//machine2.calculateNextPulses();
+			//io.printTest(machine2.m_signals.size(), 0ULL);
+			//std::cout << "\n\n\n";
 
-			signals = getNextPulses(signals, test2);
-			io.printTest(signals.size(), 0ULL);
-			std::cout << "\n\n\n";
+
+
+			//machine2.m_signals = buttonPress;
+			//machine2.incPulseCount();
+			//machine2.calculateNextPulses();
+			//io.printTest(+machine2.m_signals[0].pulse, +Pulse::Low);
+			//io.printTest(machine2.m_signals[0].destination, "a"s);
+			//io.printTest(machine2.m_signals.size(), 1ULL);
+			//std::cout << '\n';
+
+			//machine2.incPulseCount();
+			//machine2.calculateNextPulses();
+			//io.printTest(+machine2.m_signals[0].pulse, +Pulse::Low);
+			//io.printTest(machine2.m_signals[0].destination, "inv"s);
+			//io.printTest(+machine2.m_signals[1].pulse, +Pulse::Low);
+			//io.printTest(machine2.m_signals[1].destination, "con"s);
+			//io.printTest(machine2.m_signals.size(), 2ULL);
+			//std::cout << '\n';
+
+			//machine2.incPulseCount();
+			//machine2.calculateNextPulses();
+			//io.printTest(+machine2.m_signals[0].pulse, +Pulse::High);
+			//io.printTest(machine2.m_signals[0].destination, "b"s);
+			//io.printTest(+machine2.m_signals[1].pulse, +Pulse::High);
+			//io.printTest(machine2.m_signals[1].destination, "rx"s);
+			//io.printTest(machine2.m_signals.size(), 2ULL);
+			//std::cout << '\n';
+
+			//machine2.incPulseCount();
+			//machine2.calculateNextPulses();
+			//io.printTest(machine2.m_signals.size(), 0ULL);
+			//std::cout << "\n\n\n";
+
+
+
+			//machine2.m_signals = buttonPress;
+			//machine2.incPulseCount();
+			//machine2.calculateNextPulses();
+			//io.printTest(+machine2.m_signals[0].pulse, +Pulse::Low);
+			//io.printTest(machine2.m_signals[0].destination, "a"s);
+			//io.printTest(machine2.m_signals.size(), 1ULL);
+			//std::cout << '\n';
+
+			//machine2.incPulseCount();
+			//machine2.calculateNextPulses();
+			//io.printTest(+machine2.m_signals[0].pulse, +Pulse::High);
+			//io.printTest(machine2.m_signals[0].destination, "inv"s);
+			//io.printTest(+machine2.m_signals[1].pulse, +Pulse::High);
+			//io.printTest(machine2.m_signals[1].destination, "con"s);
+			//io.printTest(machine2.m_signals.size(), 2ULL);
+			//std::cout << '\n';
+
+			//machine2.incPulseCount();
+			//machine2.calculateNextPulses();
+			//io.printTest(+machine2.m_signals[0].pulse, +Pulse::Low);
+			//io.printTest(machine2.m_signals[0].destination, "b"s);
+			//io.printTest(+machine2.m_signals[1].pulse, +Pulse::Low);
+			//io.printTest(machine2.m_signals[1].destination, "rx"s);
+			//io.printTest(machine2.m_signals.size(), 2ULL);
+			//std::cout << '\n';
+
+			//machine2.incPulseCount();
+			//machine2.calculateNextPulses();
+			//io.printTest(+machine2.m_signals[0].pulse, +Pulse::Low);
+			//io.printTest(machine2.m_signals[0].destination, "con"s);
+			//io.printTest(machine2.m_signals.size(), 1ULL);
+			//std::cout << '\n';
+
+			//machine2.incPulseCount();
+			//machine2.calculateNextPulses();
+			//io.printTest(+machine2.m_signals[0].pulse, +Pulse::High);
+			//io.printTest(machine2.m_signals[0].destination, "rx"s);
+			//io.printTest(machine2.m_signals.size(), 1ULL);
+			//std::cout << '\n';
+
+			//machine2.incPulseCount();
+			//machine2.calculateNextPulses();
+			//io.printTest(machine2.m_signals.size(), 0ULL);
+			//std::cout << "\n\n\n";
 
 			io.endTests();
 		}
@@ -499,8 +663,11 @@ namespace AOC::Y2023::D20 { // Solution
 		testPuzzle(io);
 
 		auto modules{readModules(io.readInputFile<std::string>())};
-		getPulses(modules);
 
-		io.printSolution(0, 0);
+		Machine machine1{modules};
+		io.printSolution(machine1.pressButton(1000), 777666211LL);
+
+		Machine machine2{modules};
+		//io.printSolution(machine2.turnOn(), 0); // TODO: takes too long; 1.000.000 is too low
 	}
 }

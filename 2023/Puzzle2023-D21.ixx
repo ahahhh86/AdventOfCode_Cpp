@@ -102,6 +102,6 @@ Elf reach in exactly 64 steps?
 
 export module Puzzle2023:D21;
 
-//namespace AOC::Y2023::D21 {// TODO
-//	export void solvePuzzle();
-//}
+namespace AOC::Y2023::D21 {
+	export void solvePuzzle();
+}
