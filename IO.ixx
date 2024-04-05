@@ -57,6 +57,7 @@ namespace AOC {
 		void startTests() const;
 		template <typename T>
 		void printTest(const T& solution, const T& expected);		// prints the test for a function
+		void printMsg(std::string_view str) const;
 		void endTests();
 
 		std::ifstream getInputFile() const;							// get in input file, stored as *.txt in the folder "\input\"

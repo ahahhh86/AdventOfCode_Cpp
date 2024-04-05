@@ -159,6 +159,6 @@ to get disintegrated?
 
 export module Puzzle2023:D22;
 
-//namespace AOC::Y2023::D22 {// TODO
-//	export void solvePuzzle();
-//}
+namespace AOC::Y2023::D22 {
+	export void solvePuzzle();
+}

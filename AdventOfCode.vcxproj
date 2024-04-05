@@ -248,6 +248,7 @@
     <ClCompile Include="2023\Puzzle2023-D20.ixx" />
     <ClCompile Include="2023\Puzzle2023-D21.cpp" />
     <ClCompile Include="2023\Puzzle2023-D21.ixx" />
+    <ClCompile Include="2023\Puzzle2023-D22.cpp" />
     <ClCompile Include="2023\Puzzle2023-D22.ixx" />
     <ClCompile Include="2023\Puzzle2023-D23.ixx" />
     <ClCompile Include="2023\Puzzle2023-D24.ixx" />

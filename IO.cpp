@@ -66,6 +66,13 @@ namespace AOC {
 
 
 
+	void IO::printMsg(std::string_view str) const
+	{
+		std::cout << str << '\n';
+	}
+
+
+
 	void IO::endTests()
 	{
 		std::println(horizontalLine);
