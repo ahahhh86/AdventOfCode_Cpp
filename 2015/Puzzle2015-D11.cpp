@@ -18,11 +18,11 @@ namespace { // Input
 
 	std::string getInput(const std::vector<std::string> in)
 	{
-		if (in.size() != 1) throw AOC::InvalidInputData("getInput(): size");
-		if (in[0].size() != passwordLength) throw AOC::InvalidInputData("getInput(): length");
+		if (in.size() != 1) { throw AOC::InvalidInputData{"getInput(): size"}; }
+		if (in[0].size() != passwordLength) { throw AOC::InvalidInputData{"getInput(): length"}; }
 
 		std::ranges::for_each(in[0], [](char c) {
-			if (!std::islower(c)) throw AOC::InvalidInputData("getInput(): not lower");
+			if (!std::islower(c)) { throw AOC::InvalidInputData{"getInput(): not lower"}; }
 		});
 
 		return in[0];
@@ -34,7 +34,7 @@ namespace { // Input
 namespace { // Calculations
 	void increasePassword(std::string& password, std::size_t index)
 	{
-		if (password.size() <= index) throw AOC::InvalidInputData("increasePassword(): size");
+		if (password.size() <= index) { throw AOC::InvalidInputData{"increasePassword(): size"}; }
 
 		switch (password[index]) {
 		case 'h':

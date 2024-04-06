@@ -21,7 +21,7 @@ namespace { // Input
 	{
 		std::size_t line{1};
 		std::ranges::for_each(list, [&](std::string_view str) {
-			if (!str.starts_with('"') || !str.ends_with('"')) throw AOC::InvalidFileLine(line);
+			if (!str.starts_with('"') || !str.ends_with('"')) { throw AOC::InvalidFileLine{line}; }
 			++line;
 		});
 	}

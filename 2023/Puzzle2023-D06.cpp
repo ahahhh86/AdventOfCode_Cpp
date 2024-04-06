@@ -36,7 +36,7 @@ namespace { // Input
 		while (!in.eof()) {
 			Number buffer{};
 			in >> buffer;
-			if (buffer < 1) throw AOC::InvalidFileLine(0);
+			if (buffer < 1) { throw AOC::InvalidFileLine{0}; }
 			result.push_back(buffer);
 		}
 
@@ -49,7 +49,7 @@ namespace { // Input
 	{
 		std::string buffer{};
 		in >> buffer;
-		if (buffer != "Time:") throw AOC::InvalidFileLine(0);
+		if (buffer != "Time:") { throw AOC::InvalidFileLine{0}; }
 
 		return readVector(in);
 	}
@@ -60,7 +60,7 @@ namespace { // Input
 	{
 		std::string buffer{};
 		in >> buffer;
-		if (buffer != "Distance:") throw AOC::InvalidFileLine(1);
+		if (buffer != "Distance:") { throw AOC::InvalidFileLine{1}; }
 
 		return readVector(in);
 	}
@@ -77,7 +77,7 @@ namespace { // Input
 		std::getline(in, buffer);
 		const auto distances{readDistance(std::stringstream{buffer})};
 
-		if (times.size() != distances.size()) throw AOC::InvalidFileLine(2);
+		if (times.size() != distances.size()) { throw AOC::InvalidFileLine{2}; }
 
 		Races result{};
 		for (std::size_t i{0}; i < times.size(); ++i) {

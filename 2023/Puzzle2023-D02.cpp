@@ -60,7 +60,7 @@ namespace { // Input
 			int cubeCount{};
 			in >> cubeCount;
 
-			if (in.fail()) throw AOC::InvalidFileInput();
+			if (in.fail()) { throw AOC::InvalidFileInput{}; }
 
 			std::string cubeColour{};
 			in >> cubeColour;
@@ -71,7 +71,7 @@ namespace { // Input
 			} else if (cubeColour.starts_with("red")) {
 				result.red = cubeCount;
 			} else {
-				throw AOC::InvalidFileInput();
+				throw AOC::InvalidFileInput{};
 			}
 
 			if (cubeColour.ends_with(";")) break;
@@ -89,11 +89,11 @@ namespace { // Input
 		std::string buffer{};
 
 		in >> buffer;
-		if (buffer != "Game") throw AOC::InvalidFileInput();
+		if (buffer != "Game") { throw AOC::InvalidFileInput{}; }
 
 		in >> result.number;
 		in >> buffer;
-		if (buffer != ":") throw AOC::InvalidFileInput();
+		if (buffer != ":") { throw AOC::InvalidFileInput{}; }
 
 		while (!in.eof()) {
 			result.grab.push_back(readCubes(in));
@@ -109,7 +109,7 @@ namespace { // Input
 		std::string readLine{};
 		std::getline(in, readLine);
 		game = readGame(std::stringstream{readLine});
-		if (!game.isValid()) throw AOC::InvalidFileInput();
+		if (!game.isValid()) { throw AOC::InvalidFileInput{}; }
 		return in;
 	}
 }

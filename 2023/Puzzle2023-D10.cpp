@@ -41,7 +41,7 @@ namespace { // Input
 		case'7': return Tile::southWest;
 		case'F': return Tile::southEast;
 		case'.': return Tile::ground;
-		default: throw AOC::InvalidFileInput();
+		default: throw AOC::InvalidFileInput{};
 		}
 	}
 
@@ -91,7 +91,7 @@ namespace { // Input
 			return line.size() != sketch[0].size();
 		})};
 
-		if (differentLineLength != 0) throw AOC::InvalidInputData("validate");
+		if (differentLineLength != 0) { throw AOC::InvalidInputData{"validate"}; }
 	}
 }
 
@@ -115,7 +115,7 @@ namespace { // Calculations
 			}
 		}
 
-		if (startPos.size() != 1) throw AOC::InvalidInputData("getStartingPos()");
+		if (startPos.size() != 1) { throw AOC::InvalidInputData{"getStartingPos()"}; }
 		return startPos[0];
 	}
 
@@ -188,7 +188,7 @@ namespace { // Calculations
 			case Tile::eastWest:return true;
 			}
 		} else {
-			throw AOC::InvalidInputData("isValidTile");
+			throw AOC::InvalidInputData{"isValidTile"};
 		}
 
 		return false; // should not be reached, but to prevent compiler warning
@@ -220,7 +220,7 @@ namespace { // Calculations
 			pos.push_back(newPos);
 		}
 
-		if (pos.size() != 2) throw AOC::InvalidInputData("getFirstStep()");
+		if (pos.size() != 2) { throw AOC::InvalidInputData{"getFirstStep()"}; }
 		return pos;
 	}
 
@@ -233,7 +233,7 @@ namespace { // Calculations
 		} else if (p2 == oldPos) {
 			return p1;
 		} else {
-			throw AOC::InvalidInputData("chooseNewPos()");
+			throw AOC::InvalidInputData{"chooseNewPos()"};
 		}
 	}
 
@@ -248,7 +248,7 @@ namespace { // Calculations
 		case Tile::northSouth: return chooseNewPos(pos + north, pos + south, oldPos);
 		case Tile::southWest: return chooseNewPos(pos + south, pos + west, oldPos);
 		case Tile::southEast: return chooseNewPos(pos + south, pos + east, oldPos);
-		default: throw AOC::InvalidInputData("getNextPos");
+		default: throw AOC::InvalidInputData{"getNextPos"};
 		}
 	}
 

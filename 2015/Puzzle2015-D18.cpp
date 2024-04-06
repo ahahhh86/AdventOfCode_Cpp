@@ -49,13 +49,13 @@ namespace { // Input
 				break;
 
 			default:
-				throw AOC::InvalidFileInput();
+				throw AOC::InvalidFileInput{};
 			}
 
 			in >> buffer;
 		}
 
-		if (pos != result.end()) { throw AOC::InvalidInputData("readLightGrid(): file size does not match grid size."); }
+		if (pos != result.end()) { throw AOC::InvalidInputData{"readLightGrid(): file size does not match grid size."}; }
 
 		return result;
 	}

@@ -53,7 +53,7 @@ namespace { // Input
 	{
 		std::size_t index{1};
 		std::ranges::for_each(notes, [&](const Pattern& p) {
-			if (!isValid(p)) {throw AOC::InvalidFileLine(index);}
+			if (!isValid(p)) { throw AOC::InvalidFileLine{index}; }
 			++index;
 		});
 	}
@@ -64,7 +64,7 @@ namespace { // Input
 namespace { // Calculations
 	bool isReflectiveLine(const Pattern& pattern, std::size_t index, std::size_t offset = 0) // TODO: non-recursive version?
 	{
-		if (offset > index || pattern.size() <= index + offset + 1) throw AOC::InvalidInputData("isReflectiveLine()");
+		if (offset > index || pattern.size() <= index + offset + 1) { throw AOC::InvalidInputData{"isReflectiveLine()"}; }
 
 		const auto firstLine{index - offset};
 		const auto lastLine{index + offset + 1};
@@ -188,7 +188,7 @@ namespace { // Calculations
 			}
 		}
 
-		throw AOC::InvalidInputData("summarizePatternWithSmudge()");
+		throw AOC::InvalidInputData{"summarizePatternWithSmudge()"};
 	}
 }
 

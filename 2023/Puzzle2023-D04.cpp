@@ -49,7 +49,7 @@ namespace { // Input
 			}
 		}
 
-		throw AOC::InvalidFileInput();
+		throw AOC::InvalidFileInput{};
 	}
 
 
@@ -76,7 +76,7 @@ namespace { // Input
 		std::string stringBuffer{};
 
 		in >> stringBuffer;
-		if (stringBuffer != "Card") throw AOC::InvalidFileInput();
+		if (stringBuffer != "Card") { throw AOC::InvalidFileInput{}; }
 		in >> stringBuffer; // "1:"
 
 		result.winningNumbers = readWinningNumbers(in);
@@ -93,7 +93,7 @@ namespace { // Input
 		std::string readLine{};
 		std::getline(in, readLine);
 		game = readCard(std::stringstream{readLine});
-		if (!game.isValid()) throw AOC::InvalidFileInput();
+		if (!game.isValid()) { throw AOC::InvalidFileInput{}; }
 
 		return in;
 	}
@@ -144,7 +144,7 @@ namespace { // Calculations
 				const auto addIndexMin{index + 1};
 				const auto addIndexMax{index + newCards};
 
-				if (addIndexMin >= std::size(cardCount)) throw AOC::InvalidInputData("accumulateCards");
+				if (addIndexMin >= std::size(cardCount)) { throw AOC::InvalidInputData{"accumulateCards()"}; }
 
 				for (auto j{addIndexMin}; j <= addIndexMax; ++j) {
 					cardCount[j] += cardCount[index];		// the more cards you have, the more cards you win

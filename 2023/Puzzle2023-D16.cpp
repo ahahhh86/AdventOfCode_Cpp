@@ -36,7 +36,7 @@ namespace { // Input
 		case '\\': return ContraptionPart::mirrorNtoW;
 		case '|': return ContraptionPart::splitterNS;
 		case '-': return ContraptionPart::splitterEW;
-		default: throw AOC::InvalidFileInput();
+		default: throw AOC::InvalidFileInput{};
 		}
 	}
 
@@ -50,7 +50,7 @@ namespace { // Input
 
 		std::size_t index{1};
 		std::ranges::for_each(strs, [&](std::string_view str) {
-			if (str.size() != strs[0].size()) throw AOC::InvalidFileLine(index);
+			if (str.size() != strs[0].size()) { throw AOC::InvalidFileLine{index}; }
 
 			std::vector<ContraptionPart> buffer{};
 			buffer.reserve(str.size());

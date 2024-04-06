@@ -43,7 +43,7 @@ namespace { // Input
 			toggle = Toggle::toggle;
 
 		} else {
-			throw AOC::InvalidFileInput();
+			throw AOC::InvalidFileInput{};
 		}
 
 		return in;
@@ -89,7 +89,7 @@ namespace { // Input
 		in.ignore(std::ssize(" trough "));
 		in >> instruction.to;
 
-		if (!instruction.isValid()) throw AOC::InvalidFileInput();
+		if (!instruction.isValid()) { throw AOC::InvalidFileInput{}; }
 
 		return in;
 	}

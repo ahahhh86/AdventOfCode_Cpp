@@ -118,7 +118,7 @@ export namespace AOC {
 	{
 		if (!from.isInBounds({0, 0}, {m_size.x - 1, m_size.y - 1})
 		   || !to.isInBounds({0, 0}, {m_size.x - 1, m_size.y - 1})) {
-			throw AOC::aocError("Point2D::forsub(): out of bounds");
+			throw AOC::aocError{"Point2D::forsub(): out of bounds"};
 		}
 
 		for (int x{from.x}; x <= to.x; ++x) {

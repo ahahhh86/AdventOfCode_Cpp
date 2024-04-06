@@ -46,7 +46,7 @@ namespace { // Input
 		} else if (str == "jio") {
 			return Instruction::JumpIfOdd;
 		} else {
-			throw AOC::InvalidFileInput();
+			throw AOC::InvalidFileInput{};
 		}
 	}
 
@@ -58,7 +58,7 @@ namespace { // Input
 		} else if (str == "b" || str == "b,") {
 			return Register::b;
 		} else {
-			throw AOC::InvalidFileInput();
+			throw AOC::InvalidFileInput{};
 		}
 	};
 
@@ -90,11 +90,11 @@ namespace { // Input
 			break;
 
 		default:
-			throw AOC::InvalidFileInput(); // Should already been handled, but switch should have a default
+			throw AOC::InvalidFileInput{}; // Should already been handled, but switch should have a default
 			break;
 		}
 
-		if (in.fail()) throw AOC::InvalidFileInput();
+		if (in.fail()) { throw AOC::InvalidFileInput{}; }
 
 		return in;
 	}
@@ -155,7 +155,7 @@ namespace { // Calculations
 			break;
 
 		default:
-			throw AOC::aocError("getNextLine(): invalid instruction.");
+			throw AOC::aocError{"getNextLine(): invalid instruction."};
 			break;
 		}
 

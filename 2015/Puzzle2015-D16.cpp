@@ -39,7 +39,7 @@ namespace { // Input
 			buffer.first.pop_back(); // remove ':'
 			in >> buffer.second;
 
-			if (in.fail()) throw AOC::InvalidFileInput();
+			if (in.fail()) { throw AOC::InvalidFileInput{}; }
 			result.push_back(buffer);
 
 			in.ignore(std::ssize(","));
@@ -61,7 +61,7 @@ namespace { // Input
 		std::getline(in, str);
 		properties.compounds = readCompounds(std::stringstream{str});
 
-		if (in.fail()) throw AOC::InvalidFileInput();
+		if (in.fail()) { throw AOC::InvalidFileInput{}; }
 
 		return in;
 	}
@@ -85,7 +85,7 @@ namespace { // Calculations
 			std::make_pair("perfumes", 1),
 		};
 
-		if (!tickerTape.contains(c.first)) { throw AOC::InvalidInputData("matchesTape(): Compound not found."); }
+		if (!tickerTape.contains(c.first)) { throw AOC::InvalidInputData{"matchesTape(): Compound not found."}; }
 
 		if (Part2) {
 			if (c.first == "cats" || c.first == "trees") {
@@ -117,7 +117,7 @@ namespace { // Calculations
 			if (isAunt(p.compounds, Part2)) { return p.number; }
 		}
 
-		throw AOC::aocError("findAunt(): Aunt not found!");
+		throw AOC::aocError{"findAunt(): Aunt not found!"};
 	}
 }
 

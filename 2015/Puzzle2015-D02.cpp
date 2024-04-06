@@ -44,7 +44,7 @@ namespace { // Input
 		in.ignore(1);		// second x
 		in >> box.height;
 
-		if (!box.isValid()) throw AOC::InvalidFileInput();
+		if (!box.isValid()) { throw AOC::InvalidFileInput{}; }
 
 		return in;
 	}

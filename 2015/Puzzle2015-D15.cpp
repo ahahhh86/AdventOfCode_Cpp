@@ -57,7 +57,7 @@ namespace { // Input
 		in.ignore(caloriesWidth);
 		in >> stats.calories;
 
-		if (in.fail()) throw AOC::InvalidFileInput();
+		if (in.fail()) { throw AOC::InvalidFileInput{}; }
 
 		return in;
 	}
@@ -82,8 +82,8 @@ namespace { // Calculations
 	int calculateScore(const Ingredients& ingr, const StatVector& stats)
 	{
 #ifndef NDEBUG
-		if (!areIngredientsValid(ingr)) throw AOC::InvalidInputData("calculateScore(): !areIngredientsValid(ingr)");
-		if (ingr.size() != stats.size()) throw AOC::InvalidInputData("calculateScore(): ingr.size() != stats.size()");
+		if (!areIngredientsValid(ingr)) { throw AOC::InvalidInputData{"calculateScore(): !areIngredientsValid(ingr)"}; }
+		if (ingr.size() != stats.size()) { throw AOC::InvalidInputData{"calculateScore(): ingr.size() != stats.size()"}; }
 #endif // NDEBUG
 
 		int capacityScore{0};
@@ -118,8 +118,8 @@ namespace { // Calculations
 	int calculateCalories(const Ingredients& ingr, const StatVector& stats)
 	{
 #ifndef NDEBUG
-		if (!areIngredientsValid(ingr)) throw AOC::InvalidInputData("calculateScore(): !areIngredientsValid(ingr)");
-		if (ingr.size() != stats.size()) throw AOC::InvalidInputData("calculateScore(): ingr.size() != stats.size()");
+		if (!areIngredientsValid(ingr)) { throw AOC::InvalidInputData{"calculateScore(): !areIngredientsValid(ingr)"}; }
+		if (ingr.size() != stats.size()) { throw AOC::InvalidInputData{"calculateScore(): ingr.size() != stats.size()"}; }
 #endif // NDEBUG
 
 		int calories{0};

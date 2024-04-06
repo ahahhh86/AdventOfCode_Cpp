@@ -40,7 +40,7 @@ namespace { // Input
 		case 'R':
 			return Direction::right;
 		default:
-			throw AOC::InvalidFileInput();
+			throw AOC::InvalidFileInput{};
 		}
 	}
 
@@ -58,7 +58,7 @@ namespace { // Input
 			try {
 				dir.push_back(charToDirection(c));
 			} catch (AOC::InvalidFileInput&) {
-				throw AOC::InvalidFileLine(index);
+				throw AOC::InvalidFileLine{index};
 			}
 			++index;
 		});
@@ -86,14 +86,14 @@ namespace { // Input
 		in >> result.name;
 
 		in >> buffer;
-		if (buffer != "=") throw AOC::InvalidFileInput();
+		if (buffer != "=") { throw AOC::InvalidFileInput{}; }
 		in >> buffer;
-		if (!buffer.starts_with("(") || !buffer.ends_with(",")) throw AOC::InvalidFileInput();
+		if (!buffer.starts_with("(") || !buffer.ends_with(",")) { throw AOC::InvalidFileInput{}; }
 
 		result.nextNode[0] = buffer.substr(1, nodeNameLength);
 
 		in >> buffer;
-		if (!buffer.ends_with(")")) throw AOC::InvalidFileInput();
+		if (!buffer.ends_with(")")) { throw AOC::InvalidFileInput{}; }
 		result.nextNode[1] = buffer.substr(0, nodeNameLength);;
 
 		return result;
@@ -109,7 +109,7 @@ namespace { // Input
 			try {
 				network.push_back(readEntry(in));
 			} catch (AOC::InvalidFileInput&) {
-				throw AOC::InvalidFileLine(i);
+				throw AOC::InvalidFileLine{i};
 			}
 		}
 

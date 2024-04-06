@@ -28,7 +28,7 @@ namespace { // Calculations
 			if (hash.starts_with(hashStart)) return i;
 		}
 
-		throw AOC::aocError("No matching hash found!");
+		throw AOC::aocError{"No matching hash found!"};
 //		return -1;
 	}
 }

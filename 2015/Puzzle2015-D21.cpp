@@ -37,7 +37,7 @@ namespace { // Input
 		in.ignore(armor_width);
 		in >> result.armor;
 
-		if (in.fail()) throw AOC::InvalidFileInput();
+		if (in.fail()) { throw AOC::InvalidFileInput{}; }
 		return result;
 	}
 }

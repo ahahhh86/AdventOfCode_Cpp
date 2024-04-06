@@ -32,18 +32,18 @@ namespace { // Input
 
 		std::string buffer{};
 		in >> buffer;
-		if (buffer != "Hit") { throw AOC::InvalidInputData("readBossStats()"); }
+		if (buffer != "Hit") { throw AOC::InvalidInputData{"readBossStats()"}; }
 		in >> buffer;
-		if (buffer != "Points:") { throw AOC::InvalidInputData("readBossStats()"); }
+		if (buffer != "Points:") { throw AOC::InvalidInputData{"readBossStats()"}; }
 
 		in >> result.HP;
 
 		in >> buffer;
-		if (buffer != "Damage:") { throw AOC::InvalidInputData("readBossStats()"); }
+		if (buffer != "Damage:") { throw AOC::InvalidInputData{"readBossStats()"}; }
 
 		in >> result.dmg;
 
-		if (in.fail()) { throw AOC::InvalidInputData("readBossStats()"); }
+		if (in.fail()) { throw AOC::InvalidInputData{"readBossStats()"}; }
 
 		return result;
 	}
@@ -206,7 +206,7 @@ namespace { // Calculations
 		case Spell::Drain:
 			m_boss.HP -= spellStats[+Spell::Drain].value;
 			if (m_boss.HP <= 0) {
-				//throw AOC::aocError("castSpell(): MagicMissile would have been cheaper");
+				//throw AOC::aocError{"castSpell(): MagicMissile would have been cheaper"};
 				return BattleResult::Won;
 			}
 			m_self.HP += spellStats[+Spell::Drain].value;
@@ -225,7 +225,7 @@ namespace { // Calculations
 			break;
 
 		default:
-			throw AOC::aocError("castSpell(): unknown spell");
+			throw AOC::aocError{"castSpell(): unknown spell"};
 		}
 
 		m_self.MP -= spellStats[+spell].cost;
@@ -326,7 +326,7 @@ namespace { // Calculations
 			Battle battle{boss, {ownStartHP, ownStartMP}};
 			const BattleResult result{battle.fight(usedSpells)};
 
-			if (result == BattleResult::Ongoing) { throw AOC::aocError("findMinMana(): assumption about usedSpells were not correct"); }
+			if (result == BattleResult::Ongoing) { throw AOC::aocError{"findMinMana(): assumption about usedSpells were not correct"}; }
 			if (result == BattleResult::Won) {
 				minMana = std::min(minMana, battle.getManaUsage());
 			}

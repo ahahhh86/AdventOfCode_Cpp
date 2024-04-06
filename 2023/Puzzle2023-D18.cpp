@@ -48,7 +48,7 @@ namespace { // Input
 			break;
 
 		default:
-			throw AOC::InvalidFileInput();
+			throw AOC::InvalidFileInput{};
 		}
 
 		return in;
@@ -81,10 +81,10 @@ namespace { // Input
 		try {
 			result.color = std::stoi(buffer, nullptr, 16);
 		} catch (...) {
-			throw AOC::InvalidFileInput();
+			throw AOC::InvalidFileInput{};
 		}
 
-		if (in.fail()) { throw AOC::InvalidFileInput(); }
+		if (in.fail()) { throw AOC::InvalidFileInput{}; }
 
 		return result;
 	}
@@ -128,7 +128,7 @@ namespace { // Calculations
 		case Direction::Left:
 			return {0, -1};
 		default:
-			throw AOC::InvalidInputData("directionToPoint()");
+			throw AOC::InvalidInputData{"directionToPoint()"};
 		}
 	}
 
@@ -166,7 +166,7 @@ namespace { // Calculations
 			digLine(result, pos, directionToPoint(i.direction), i.length);
 		});
 
-		if (pos != start) { throw AOC::InvalidInputData("digFrame()"); }
+		if (pos != start) { throw AOC::InvalidInputData{"digFrame()"}; }
 
 		return result;
 	}
@@ -283,7 +283,7 @@ namespace { // Calculations
 			case 2: return Direction::Left;
 			case 3: return Direction::Up;
 		default:
-			throw AOC::InvalidInputData("intToDirection()");
+			throw AOC::InvalidInputData{"intToDirection()"};
 		}
 	}
 

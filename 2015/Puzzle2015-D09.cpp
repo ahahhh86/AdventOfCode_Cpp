@@ -54,7 +54,7 @@ namespace { // Input
 		in.ignore(std::ssize("= "));
 		in >> data.distance;
 
-		if (!data.isValid()) throw AOC::InvalidFileInput();
+		if (!data.isValid()) { throw AOC::InvalidFileInput{} ;}
 
 		return in;
 	}
@@ -107,7 +107,7 @@ namespace { // Calculations
 			return map.at(loc);
 		}
 
-		throw AOC::InvalidInputData("getLocationDistance");
+		throw AOC::InvalidInputData{"getLocationDistance()"};
 	}
 
 

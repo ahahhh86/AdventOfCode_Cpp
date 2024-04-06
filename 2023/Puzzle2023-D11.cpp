@@ -32,7 +32,7 @@ namespace { // Input
 			return line.size() != map[0].size();
 		})};
 
-		if (differentLineLength != 0) {throw AOC::InvalidInputData("validate()");}
+		if (differentLineLength != 0) { throw AOC::InvalidInputData{"validate()"}; }
 	}
 
 
@@ -94,7 +94,7 @@ namespace { // Input
 				if (map[line][pos] == charGalaxy) {
 					result.push_back({static_cast<Number>(line), static_cast<Number>(pos)});
 				} else if (map[line][pos] != charEmpty) {
-					throw AOC::InvalidInputData("findGalaxies()");
+					throw AOC::InvalidInputData{"findGalaxies()"};
 				}
 			}
 		}

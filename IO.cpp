@@ -91,9 +91,7 @@ namespace AOC {
 	{
 		const std::string filename{std::format("./input/{}/Day{:02}.txt", +m_date.year, +m_date.day)};
 		std::ifstream result{filename};
-		if (!result) {
-			throw InvalidFile(filename);
-		}
+		if (!result) { throw InvalidFile{filename}; }
 		return result;
 	}
 }

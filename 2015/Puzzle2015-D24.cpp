@@ -21,7 +21,7 @@ namespace { // Calculations
 	{
 		constexpr int groupCount{3};
 		const auto sumWeight{std::accumulate(packages.cbegin(), packages.cend(), 0)};
-		if (sumWeight % groupCount != 0) { throw AOC::InvalidInputData("calculateGroupWeight(): weight not dividable by groups"); }
+		if (sumWeight % groupCount != 0) { throw AOC::InvalidInputData{"calculateGroupWeight(): weight not dividable by groups"}; }
 		return sumWeight / groupCount;
 	}
 

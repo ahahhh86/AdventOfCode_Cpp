@@ -16,8 +16,8 @@ import BasicImports;
 namespace { // Input
 	std::string getInput(const std::vector<std::string> in)
 	{
-		if (in.size() != 1) throw AOC::InvalidInputData("getInput");
-		if (in[0].find_first_not_of("0123456789") != std::string::npos) throw AOC::InvalidInputData("getInput");
+		if (in.size() != 1) { throw AOC::InvalidInputData("getInput(): size has to be 1"); }
+		if (in[0].find_first_not_of("0123456789") != std::string::npos) { throw AOC::InvalidInputData{"getInput(): invalid char"}; }
 
 		return in[0];
 	}

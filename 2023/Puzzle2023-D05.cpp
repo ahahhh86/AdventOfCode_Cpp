@@ -85,7 +85,7 @@ namespace { // Input
 		std::ranges::for_each(headlines, [&](std::string_view hl) {
 			std::string bufferStr{};
 			std::getline(in, bufferStr);
-			if (bufferStr != hl) throw AOC::InvalidFileLine(index);
+			if (bufferStr != hl) { throw AOC::InvalidFileLine{index}; }
 			++index;
 
 			AlmanacMap bufferMap{};
@@ -112,7 +112,7 @@ namespace { // Input
 
 		std::string buffer{};
 		in >> buffer;
-		if (buffer != "seeds:") throw AOC::InvalidFileInput();
+		if (buffer != "seeds:") { throw AOC::InvalidFileInput{};}
 		in >> result.seeds;
 		in >> result.maps;
 
@@ -169,7 +169,7 @@ namespace { // Calculations
 	namespace Part2 {
 		static auto minLocation(const Almanac& almanac)
 		{
-			if (almanac.seeds.size() % 2 != 0) throw AOC::InvalidInputData("Part2::minLocation");
+			if (almanac.seeds.size() % 2 != 0) { throw AOC::InvalidInputData{"Part2::minLocation"}; }
 
 			auto minLocation{std::numeric_limits<Id>::max()};
 

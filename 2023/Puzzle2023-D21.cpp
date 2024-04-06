@@ -106,8 +106,8 @@ namespace { // Calculations
 			pos.y = recalculatePosition(pos.y, gridSize.y);
 
 			if (!pos.isInBounds({0, 0}, {gridSize.x - 1,gridSize.y - 1})) {
-				throw AOC::aocError(std::to_string(pos.x) + "|" + std::to_string(pos.y)
-				+ "-" + std::to_string(org.x) + "|" + std::to_string(org.y));
+				throw AOC::aocError{std::to_string(pos.x) + "|" + std::to_string(pos.y)
+					+ "-" + std::to_string(org.x) + "|" + std::to_string(org.y)};
 			}
 			return grid[pos] == Plot::Garden;
 		}

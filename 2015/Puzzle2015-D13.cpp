@@ -34,14 +34,14 @@ namespace { // Input
 		int num{};
 		in >> num;
 
-		if (in.fail()) throw AOC::InvalidFileInput();
+		if (in.fail()) { throw AOC::InvalidFileInput{} ;}
 
 		if (str == "gain") {
 			return num;
 		} else if (str == "lose") {
 			return -num;
 		} else {
-			throw AOC::InvalidFileInput();
+			throw AOC::InvalidFileInput{};
 		}
 	}
 

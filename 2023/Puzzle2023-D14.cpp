@@ -32,7 +32,7 @@ namespace { // Input
 		case 'O': return Rock::rounded;
 		case '#': return Rock::cubeShaped;
 		case '.': return Rock::empty;
-		default: throw AOC::InvalidFileInput();
+		default: throw AOC::InvalidFileInput{};
 		}
 	}
 
@@ -44,7 +44,7 @@ namespace { // Input
 		platform.reserve(input.size());
 
 		std::ranges::for_each(input, [&](std::string_view line) {
-			if (line.size() != input[0].size()) {throw AOC::InvalidInputData("readPlatform(): line sizes do not match");}
+			if (line.size() != input[0].size()) { throw AOC::InvalidInputData{"readPlatform(): line sizes do not match"}; }
 
 			std::vector<Rock> buffer{};
 			buffer.reserve(line.size());

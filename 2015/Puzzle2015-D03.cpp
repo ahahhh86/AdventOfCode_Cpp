@@ -38,7 +38,7 @@ namespace { // Input
 		case '<':
 			return Direction::west;
 		default:
-			throw AOC::InvalidFileInput();
+			throw AOC::InvalidFileInput{};
 		}
 	}
 

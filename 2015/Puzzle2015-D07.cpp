@@ -61,7 +61,7 @@ namespace { // Input
 		} else if (buffer == "RSHIFT") {
 			return Gate::gRShift;
 		} else {
-			throw AOC::InvalidFileInput();
+			throw AOC::InvalidFileInput{};
 		}
 	}
 
@@ -84,7 +84,7 @@ namespace { // Input
 	{
 		std::string buffer{};
 		in >> buffer;
-		if (buffer != "->") throw AOC::InvalidFileInput();
+		if (buffer != "->") { throw AOC::InvalidFileInput{}; };
 		in >> buffer;
 		return buffer;
 	}
@@ -190,7 +190,7 @@ namespace { // Calculations
 		case Gate::gRShift:
 			return static_cast<Signal>(a >> b);
 		default:
-			throw AOC::aocError("calculateSignal(): Not all cases of Gate have been included.");
+			throw AOC::aocError{"calculateSignal(): Not all cases of Gate have been included."};
 		}
 	}
 

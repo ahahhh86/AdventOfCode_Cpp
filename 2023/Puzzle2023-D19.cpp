@@ -52,7 +52,7 @@ namespace { // Input
 		in.ignore(preS);
 		in >> stats.s;
 
-		if (in.fail()) { throw AOC::InvalidInputData("readPartStats()"); }
+		if (in.fail()) { throw AOC::InvalidInputData{"readPartStats()"}; }
 
 		return stats;
 	}
@@ -71,7 +71,7 @@ namespace { // Input
 		case '>': return RuleOperator::Bigger;
 		case '<': return RuleOperator::Smaller;
 		default:
-			throw AOC::InvalidInputData("charToOperator()");
+			throw AOC::InvalidInputData{"charToOperator()"};
 		}
 	}
 
@@ -101,7 +101,7 @@ namespace { // Input
 		case 's':
 			break;
 		default:
-			throw AOC::InvalidInputData("readCondition(): stat");
+			throw AOC::InvalidInputData{"readCondition(): stat"};
 		}
 
 		char buffer{};
@@ -109,8 +109,8 @@ namespace { // Input
 		result.op = charToOperator(buffer);
 
 		in >> result.value;
-		if (in.fail()) { throw AOC::InvalidInputData("readCondition(): invalid value"); }
-		if (result.value < minStatValue || maxStatValue < result.value) { throw AOC::InvalidInputData("readCondition(): value out of bounds"); }
+		if (in.fail()) { throw AOC::InvalidInputData{"readCondition(): invalid value"}; }
+		if (result.value < minStatValue || maxStatValue < result.value) { throw AOC::InvalidInputData{"readCondition(): value out of bounds"}; }
 
 		return result;
 	}
@@ -218,7 +218,7 @@ namespace { // Calculations
 			stat = part.s;
 			break;
 		default:
-			throw AOC::InvalidInputData("getStat()");
+			throw AOC::InvalidInputData{"checkCondition()"};
 		}
 
 		return c.op == RuleOperator::Bigger ? stat > c.value : stat < c.value;
@@ -232,7 +232,7 @@ namespace { // Calculations
 			return wf.name == name;
 		})};
 
-		if (workflow == wfv.cend()) { throw AOC::InvalidInputData("getNextRule(): rule not found"); }
+		if (workflow == wfv.cend()) { throw AOC::InvalidInputData{"getNextRule(): rule not found"}; }
 
 		for (const Rule& r : workflow->rules) {
 			if (checkCondition(r.condition, part)) {

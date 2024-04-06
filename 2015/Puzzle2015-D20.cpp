@@ -16,7 +16,7 @@ namespace { // Input
 	{
 		int buffer{};
 		in >> buffer;
-		if (buffer == 0) throw AOC::InvalidFileInput();
+		if (buffer == 0) { throw AOC::InvalidFileInput{}; }
 		return buffer;
 	}
 }

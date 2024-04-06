@@ -152,7 +152,7 @@ namespace AOC {
 				result.push_back(buffer);
 			} catch (InvalidFileInput&) {
 				if (in.eof()) {break;}
-				throw InvalidFileLine(i);
+				throw InvalidFileLine{i};
 			}
 		}
 

@@ -70,7 +70,7 @@ namespace { // Calculations
 
 	Extrapolated extrapolateNumbers(const History& h)
 	{
-		if (h.size() == 0) throw AOC::InvalidInputData("extrapolateNumbers");
+		if (h.size() == 0) { throw AOC::InvalidInputData{"extrapolateNumbers()"}; }
 		if (areNumbersSame(h)) return {h[0], h[0]};
 
 		const auto hSize{h.size()};

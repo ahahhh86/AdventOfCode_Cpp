@@ -34,7 +34,7 @@ namespace { // Input
 		in.ignore(std::ssize("seconds, but then must rest for "));
 		in >> deer.restTime;
 		in.ignore(std::ssize("seconds.\n"));
-		if (in.fail()) throw AOC::InvalidFileInput();
+		if (in.fail()) { throw AOC::InvalidFileInput{}; }
 
 		return in;
 	}

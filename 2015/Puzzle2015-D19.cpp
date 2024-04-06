@@ -46,7 +46,7 @@ namespace { // Input
 		str >> result.find;
 		std::string buffer{};
 		str >> buffer;
-		if (buffer != "=>") throw AOC::InvalidFileInput();
+		if (buffer != "=>") { throw AOC::InvalidFileInput{}; }
 		str >> result.replace;
 
 		return result;
